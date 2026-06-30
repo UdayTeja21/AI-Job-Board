@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: #FFFFFF;
+    --surface: #F9FAFB;
+    --primary: #4F46E5; /* Indigo */
+    --accent: #06B6D4; /* Cyan */
+    --text: #0F172A;
+    --text-muted: #64748B;
+    --border: #E5E7EB;
+  }
+
+  .dark {
+    --background: #09090B;
+    --surface: #18181B;
+    --primary: #6366F1;
+    --accent: #22D3EE;
+    --text: #FAFAFA;
+    --text-muted: #A1A1AA;
+    --border: #27272A;
+  }
+
+  body {
+    @apply bg-[color:var(--background)] text-[color:var(--text)] font-sans antialiased transition-colors duration-300;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-[color:var(--surface)] backdrop-blur-md border border-[color:var(--border)] shadow-sm;
+  }
+}
