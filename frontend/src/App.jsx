@@ -10,10 +10,14 @@ import DashboardLayout from './components/layout/DashboardLayout';
 import SeekerDashboard from './pages/dashboard/SeekerDashboard';
 import SeekerApplications from './pages/dashboard/SeekerApplications';
 import SeekerSavedJobs from './pages/dashboard/SeekerSavedJobs';
+import SeekerNotifications from './pages/dashboard/SeekerNotifications';
 import RecruiterDashboard from './pages/dashboard/RecruiterDashboard';
 import RecruiterJobs from './pages/dashboard/RecruiterJobs';
 import RecruiterCompany from './pages/dashboard/RecruiterCompany';
+import RecruiterCreateJob from './pages/dashboard/RecruiterCreateJob';
+import FindCandidates from './pages/dashboard/FindCandidates';
 import DashboardSettings from './pages/dashboard/DashboardSettings';
+import RecruiterKanban from './pages/dashboard/RecruiterKanban';
 import { useAuth } from './context/AuthContext';
 
 // A simple wrapper to render the correct dashboard based on role
@@ -41,9 +45,14 @@ function App() {
               <Route index element={<DashboardRouter />} />
               <Route path="applications" element={<SeekerApplications />} />
               <Route path="saved" element={<SeekerSavedJobs />} />
+              <Route path="notifications" element={<SeekerNotifications />} />
               <Route path="settings" element={<DashboardSettings />} />
               <Route path="jobs" element={<RecruiterJobs />} />
+              <Route path="jobs/new" element={<RecruiterCreateJob />} />
+              <Route path="jobs/:id/edit" element={<RecruiterCreateJob />} />
+              <Route path="kanban" element={<RecruiterKanban />} />
               <Route path="company" element={<RecruiterCompany />} />
+              <Route path="candidates" element={<FindCandidates />} />
             </Route>
           </Routes>
         </main>

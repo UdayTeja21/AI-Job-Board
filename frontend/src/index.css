@@ -1,35 +1,93 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-heading: "Outfit", system-ui, sans-serif;
+
+  --color-background: hsl(var(--background));
+  --color-surface: hsl(var(--surface));
+  --color-surface-hover: hsl(var(--surface-hover));
+  --color-primary: hsl(var(--primary));
+  --color-accent: hsl(var(--accent));
+  --color-text: hsl(var(--text));
+  --color-text-muted: hsl(var(--text-muted));
+  --color-border: hsl(var(--border));
+  --color-danger: hsl(var(--danger));
+  --color-success: hsl(var(--success));
+  --color-warning: hsl(var(--warning));
+
+  --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.08);
+  --shadow-glow: 0 0 20px rgba(79, 70, 229, 0.25);
+  --shadow-glass: inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+
+  --animate-fade-in: fadeIn 0.5s ease-out;
+  --animate-slide-up: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes slideUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+}
+
 @layer base {
   :root {
-    --background: #FFFFFF;
-    --surface: #F9FAFB;
-    --primary: #4F46E5; /* Indigo */
-    --accent: #06B6D4; /* Cyan */
-    --text: #0F172A;
-    --text-muted: #64748B;
-    --border: #E5E7EB;
+    /* Premium Light Mode Colors */
+    --background: 210 40% 98%; /* Soft tinted white */
+    --surface: 0 0% 100%;
+    --surface-hover: 210 20% 96%;
+    --primary: 221 83% 53%; /* Elegant Royal Blue */
+    --primary-foreground: 210 40% 98%;
+    --accent: 199 89% 48%; /* Vibrant Cyan Accent */
+    --text: 222 47% 11%;
+    --text-muted: 215 16% 47%;
+    --border: 214 32% 91%;
+    --danger: 0 84% 60%;
+    --success: 142 71% 45%;
+    --warning: 38 92% 50%;
   }
 
   .dark {
-    --background: #09090B;
-    --surface: #18181B;
-    --primary: #6366F1;
-    --accent: #22D3EE;
-    --text: #FAFAFA;
-    --text-muted: #A1A1AA;
-    --border: #27272A;
+    /* Premium Dark Mode - Midnight Blue theme */
+    --background: 222 47% 7%;
+    --surface: 222 47% 11%;
+    --surface-hover: 222 47% 15%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 11%;
+    --accent: 199 89% 48%;
+    --text: 210 40% 98%;
+    --text-muted: 215 20% 65%;
+    --border: 217 33% 17%;
+    --danger: 0 72% 51%;
+    --success: 142 71% 45%;
+    --warning: 38 92% 50%;
   }
 
   body {
-    @apply bg-[color:var(--background)] text-[color:var(--text)] font-sans antialiased transition-colors duration-300;
+    @apply bg-[hsl(var(--background))] text-[hsl(var(--text))] font-sans antialiased transition-colors duration-300;
+    /* Optional subtle noise/texture for premium feel */
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight;
   }
 }
 
 @layer utilities {
   .glass-panel {
-    @apply bg-[color:var(--surface)] backdrop-blur-md border border-[color:var(--border)] shadow-sm;
+    @apply bg-[hsl(var(--surface)/0.7)] backdrop-blur-xl border border-[hsl(var(--border)/0.5)] shadow-sm;
+  }
+  
+  .glass-card {
+    @apply bg-gradient-to-br from-[hsl(var(--surface)/0.9)] to-[hsl(var(--surface)/0.4)] backdrop-blur-lg border border-[hsl(var(--border)/0.4)] shadow-soft;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))];
   }
 }

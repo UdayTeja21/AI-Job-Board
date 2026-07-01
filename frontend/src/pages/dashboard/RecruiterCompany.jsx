@@ -1,21 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import { Building2, Globe, MapPin, Users } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import api from '../../services/api';
 
 const RecruiterCompany = () => {
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
+  const [company, setCompany] = useState({
+    name: '',
+    website: '',
+    location: '',
+    description: '',
+    companySize: '1-10 employees',
+  });
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const fetchCompany = async () => {
+      try {
+        const res = await api.get('/companies/my');
+        if (res.data) {
+          setCompany({
+            name: res.data.name || '',
+            website: res.data.website || '',
+            location: res.data.location || '',
+            description: res.data.description || '',
+            companySize: res.data.companySize || '1-10 employees',
+          });
+        }
+      } catch (error) {
+        // If 404, they just haven't created one yet
+        if (error.response && error.response.status !== 404) {
+          toast.error('Failed to load company profile');
+        }
+      } finally {
+        setFetching(false);
+      }
+    };
+    fetchCompany();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setCompany(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await api.post('/companies/my', company);
       toast.success('Company profile updated successfully');
-    }, 1000);
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to update company');
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (fetching) {
+    return <div className="p-8 text-center"><div className="animate-spin h-8 w-8 mx-auto border-4 border-primary border-t-transparent rounded-full" /></div>;
+  }
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -46,31 +93,40 @@ const RecruiterCompany = () => {
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-text">Company Name</label>
-                <Input placeholder="Tech Innovators Inc." />
+                <Input name="name" value={company.name} onChange={handleChange} required placeholder="Tech Innovators Inc." />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-text flex items-center gap-2"><Globe className="h-4 w-4 text-text-muted" /> Website</label>
-                <Input placeholder="https://example.com" />
+                <Input name="website" value={company.website} onChange={handleChange} placeholder="https://example.com" />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-text flex items-center gap-2"><Users className="h-4 w-4 text-text-muted" /> Company Size</label>
-                <select className="w-full h-11 px-4 rounded-lg border border-border bg-surface text-text focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none">
-                  <option>1-10 employees</option>
-                  <option>11-50 employees</option>
-                  <option>51-200 employees</option>
-                  <option>201-500 employees</option>
-                  <option>500+ employees</option>
+                <select 
+                  name="companySize"
+                  value={company.companySize}
+                  onChange={handleChange}
+                  className="w-full h-11 px-4 rounded-lg border border-border bg-surface text-text focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none"
+                >
+                  <option value="1-10 employees">1-10 employees</option>
+                  <option value="11-50 employees">11-50 employees</option>
+                  <option value="51-200 employees">51-200 employees</option>
+                  <option value="201-500 employees">201-500 employees</option>
+                  <option value="500+ employees">500+ employees</option>
                 </select>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-text flex items-center gap-2"><MapPin className="h-4 w-4 text-text-muted" /> Headquarters</label>
-                <Input placeholder="San Francisco, CA" />
+                <Input name="location" value={company.location} onChange={handleChange} required placeholder="San Francisco, CA" />
               </div>
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-medium text-text">Company Description</label>
               <textarea 
+                name="description"
+                value={company.description}
+                onChange={handleChange}
+                required
                 className="w-full min-h-[120px] rounded-lg border border-border bg-surface px-4 py-3 text-text focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                 placeholder="Tell candidates what your company is all about..."
               ></textarea>

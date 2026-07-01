@@ -21,8 +21,14 @@ export const getJobs = async (req, res, next) => {
 
     const category = req.query.category ? { category: req.query.category } : {};
     const workMode = req.query.workMode ? { workMode: req.query.workMode } : {};
+    const jobType = req.query.jobType ? { jobType: req.query.jobType } : {};
     
-    const query = { ...keyword, ...category, ...workMode, status: 'Active' };
+    // For location, we can do a simple regex match
+    const location = req.query.location 
+      ? { location: { $regex: req.query.location, $options: 'i' } } 
+      : {};
+    
+    const query = { ...keyword, ...category, ...workMode, ...jobType, ...location, status: 'Active' };
 
     const count = await Job.countDocuments(query);
     const jobs = await Job.find(query)
@@ -94,6 +100,90 @@ export const createJob = async (req, res, next) => {
 
     const createdJob = await job.save();
     res.status(201).json(createdJob);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get recruiter's jobs
+// @route   GET /api/jobs/recruiter
+// @access  Private/Recruiter
+export const getRecruiterJobs = async (req, res, next) => {
+  try {
+    const jobs = await Job.find({ recruiter: req.user._id })
+      .populate('company', 'name')
+      .sort({ createdAt: -1 });
+    res.json(jobs);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Update a job
+// @route   PUT /api/jobs/:id
+// @access  Private/Recruiter
+export const updateJob = async (req, res, next) => {
+  try {
+    const job = await Job.findById(req.params.id);
+
+    if (!job) {
+      res.status(404);
+      return next(new Error('Job not found'));
+    }
+
+    if (job.recruiter.toString() !== req.user._id.toString()) {
+      res.status(403);
+      return next(new Error('Not authorized to update this job'));
+    }
+
+    const {
+      title,
+      description,
+      requirements,
+      category,
+      jobType,
+      workMode,
+      location,
+      salaryRange,
+      status,
+    } = req.body;
+
+    if (title) job.title = title;
+    if (description) job.description = description;
+    if (requirements) job.requirements = typeof requirements === 'string' ? requirements.split(',').map((r) => r.trim()) : requirements;
+    if (category) job.category = category;
+    if (jobType) job.jobType = jobType;
+    if (workMode) job.workMode = workMode;
+    if (location) job.location = location;
+    if (salaryRange) job.salaryRange = salaryRange;
+    if (status) job.status = status;
+
+    const updatedJob = await job.save();
+    res.json(updatedJob);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Delete a job
+// @route   DELETE /api/jobs/:id
+// @access  Private/Recruiter
+export const deleteJob = async (req, res, next) => {
+  try {
+    const job = await Job.findById(req.params.id);
+
+    if (!job) {
+      res.status(404);
+      return next(new Error('Job not found'));
+    }
+
+    if (job.recruiter.toString() !== req.user._id.toString()) {
+      res.status(403);
+      return next(new Error('Not authorized to delete this job'));
+    }
+
+    await job.deleteOne();
+    res.json({ message: 'Job removed' });
   } catch (error) {
     next(error);
   }

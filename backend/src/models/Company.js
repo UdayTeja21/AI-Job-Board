@@ -25,6 +25,10 @@ const companySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    companySize: {
+      type: String,
+      default: '1-10 employees',
+    },
     recruiter: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',

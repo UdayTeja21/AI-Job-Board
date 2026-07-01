@@ -12,21 +12,30 @@ const JobSearch = () => {
   const [loading, setLoading] = useState(true);
   const [keyword, setKeyword] = useState('');
   const [debouncedKeyword, setDebouncedKeyword] = useState('');
+  const [location, setLocation] = useState('');
+  const [debouncedLocation, setDebouncedLocation] = useState('');
+  const [jobTypeFilters, setJobTypeFilters] = useState([]);
+  const [workModeFilters, setWorkModeFilters] = useState([]);
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
 
   useEffect(() => {
     const timerId = setTimeout(() => {
       setDebouncedKeyword(keyword);
+      setDebouncedLocation(location);
     }, 500);
     return () => clearTimeout(timerId);
-  }, [keyword]);
+  }, [keyword, location]);
 
   useEffect(() => {
     const fetchJobs = async () => {
       setLoading(true);
       try {
-        const res = await api.get(`/jobs?keyword=${debouncedKeyword}&pageNumber=${page}`);
+        let query = `/jobs?keyword=${debouncedKeyword}&location=${debouncedLocation}&pageNumber=${page}`;
+        if (jobTypeFilters.length > 0) query += `&jobType=${jobTypeFilters.join(',')}`;
+        if (workModeFilters.length > 0) query += `&workMode=${workModeFilters.join(',')}`;
+        
+        const res = await api.get(query);
         setJobs(res.data.jobs);
         setPages(res.data.pages);
       } catch (error) {
@@ -36,7 +45,13 @@ const JobSearch = () => {
       }
     };
     fetchJobs();
-  }, [debouncedKeyword, page]);
+  }, [debouncedKeyword, debouncedLocation, page, jobTypeFilters, workModeFilters]);
+
+  const toggleFilter = (setFilterState, value) => {
+    setFilterState(prev => 
+      prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
+    );
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -55,7 +70,12 @@ const JobSearch = () => {
           </div>
           <div className="flex-1 relative">
             <MapPin className="absolute left-3 top-3 h-5 w-5 text-text-muted" />
-            <Input placeholder="Location" className="pl-10" />
+            <Input 
+              placeholder="Location" 
+              className="pl-10" 
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            />
           </div>
           <Button className="md:w-auto w-full">Search</Button>
         </div>
@@ -73,7 +93,12 @@ const JobSearch = () => {
             <h4 className="text-sm font-medium">Job Type</h4>
             {['Full-time', 'Part-time', 'Contract', 'Internship'].map((type) => (
               <label key={type} className="flex items-center gap-2 text-sm text-text-muted cursor-pointer">
-                <input type="checkbox" className="rounded text-primary focus:ring-primary" />
+                <input 
+                  type="checkbox" 
+                  className="rounded text-primary focus:ring-primary"
+                  checked={jobTypeFilters.includes(type)}
+                  onChange={() => toggleFilter(setJobTypeFilters, type)}
+                />
                 {type}
               </label>
             ))}
@@ -83,7 +108,12 @@ const JobSearch = () => {
             <h4 className="text-sm font-medium">Work Mode</h4>
             {['Remote', 'Onsite', 'Hybrid'].map((mode) => (
               <label key={mode} className="flex items-center gap-2 text-sm text-text-muted cursor-pointer">
-                <input type="checkbox" className="rounded text-primary focus:ring-primary" />
+                <input 
+                  type="checkbox" 
+                  className="rounded text-primary focus:ring-primary"
+                  checked={workModeFilters.includes(mode)}
+                  onChange={() => toggleFilter(setWorkModeFilters, mode)}
+                />
                 {mode}
               </label>
             ))}

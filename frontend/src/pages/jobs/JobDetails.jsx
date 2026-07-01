@@ -4,10 +4,11 @@ import { motion } from 'framer-motion';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-hot-toast';
-import { MapPin, Briefcase, DollarSign, Calendar, Sparkles, Building2 } from 'lucide-react';
+import { MapPin, Briefcase, DollarSign, Calendar, Sparkles, Building2, Bot } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Card, CardContent } from '../../components/ui/Card';
+import { cn } from '../../lib/utils';
 
 const JobDetails = () => {
   const { id } = useParams();
@@ -19,9 +20,10 @@ const JobDetails = () => {
   const [loadingAi, setLoadingAi] = useState(false);
   
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
-  const [resume, setResume] = useState(user?.resume || '');
+  const [resumeFile, setResumeFile] = useState(null);
   const [coverLetter, setCoverLetter] = useState('');
   const [applying, setApplying] = useState(false);
+  const [isGeneratingCoverLetter, setIsGeneratingCoverLetter] = useState(false);
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -49,13 +51,51 @@ const JobDetails = () => {
     }
   };
 
+  const generateCoverLetter = () => {
+    if (!user) return toast.error('Please login first');
+    setIsGeneratingCoverLetter(true);
+    setCoverLetter('');
+    
+    // Simulate typing animation
+    const text = `Dear Hiring Manager,\n\nI am thrilled to apply for the ${job.title} position at ${job.company?.name}. With my strong background in ${job.category} and my passion for delivering high-quality results, I am confident in my ability to make an immediate impact at your organization.\n\nThroughout my career, I have honed the skills listed in your requirements, and I am excited about the opportunity to bring my expertise to your team.\n\nThank you for considering my application. I look forward to discussing how my skills and experiences align with your needs.\n\nSincerely,\n${user.name}`;
+    
+    let i = 0;
+    const intervalId = setInterval(() => {
+      setCoverLetter(text.substring(0, i + 1));
+      i++;
+      if (i >= text.length) {
+        clearInterval(intervalId);
+        setIsGeneratingCoverLetter(false);
+        toast.success('AI Cover Letter Generated!');
+      }
+    }, 15);
+  };
+
   const handleApply = async (e) => {
     e.preventDefault();
+    if (!resumeFile && !user?.resume) {
+      return toast.error('Please upload a resume');
+    }
+
     setApplying(true);
     try {
+      let finalResumeUrl = user?.resume || '';
+
+      if (resumeFile) {
+        const formData = new FormData();
+        formData.append('resume', resumeFile);
+        
+        const uploadRes = await api.post('/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        finalResumeUrl = uploadRes.data.resumeUrl;
+      }
+
       await api.post('/applications', {
         jobId: id,
-        resume,
+        resume: finalResumeUrl,
         coverLetter
       });
       toast.success('Successfully applied for the job!');
@@ -174,21 +214,39 @@ const JobDetails = () => {
             </div>
             <form onSubmit={handleApply} className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Resume URL</label>
+                <label className="block text-sm font-medium mb-1">Resume Document</label>
                 <input 
-                  type="text" 
-                  className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none" 
-                  value={resume}
-                  onChange={(e) => setResume(e.target.value)}
-                  placeholder="Link to your resume/portfolio"
-                  required
+                  type="file" 
+                  accept=".pdf,.doc,.docx"
+                  className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" 
+                  onChange={(e) => setResumeFile(e.target.files[0])}
+                  required={!user?.resume}
                 />
+                {user?.resume && !resumeFile && (
+                  <p className="text-xs text-text-muted mt-1">Your saved resume will be used if you don't upload a new one.</p>
+                )}
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Cover Letter (Optional)</label>
+                <div className="flex justify-between items-center mb-1">
+                  <label className="block text-sm font-medium">Cover Letter (Optional)</label>
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={generateCoverLetter} 
+                    disabled={isGeneratingCoverLetter}
+                    className="text-primary hover:text-primary hover:bg-primary/10 h-8"
+                  >
+                    <Bot className="w-4 h-4 mr-2" />
+                    {isGeneratingCoverLetter ? 'Generating...' : 'Auto-Generate with AI'}
+                  </Button>
+                </div>
                 <textarea 
-                  className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none" 
-                  rows="4"
+                  className={cn(
+                    "w-full rounded-xl border bg-surface px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none transition-all",
+                    isGeneratingCoverLetter ? "border-primary/50 shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.2)]" : "border-border"
+                  )}
+                  rows="6"
                   value={coverLetter}
                   onChange={(e) => setCoverLetter(e.target.value)}
                   placeholder="Why are you a great fit?"

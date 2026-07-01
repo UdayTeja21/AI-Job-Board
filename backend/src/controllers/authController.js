@@ -106,6 +106,9 @@ export const updateUserProfile = async (req, res, next) => {
       user.title = req.body.title || user.title;
       user.bio = req.body.bio || user.bio;
       user.skills = req.body.skills ? req.body.skills.split(',').map(s => s.trim()) : user.skills;
+      if (req.body.resume !== undefined) {
+        user.resume = req.body.resume;
+      }
       
       if (req.body.password) {
         user.password = req.body.password;
@@ -121,6 +124,39 @@ export const updateUserProfile = async (req, res, next) => {
         avatar: updatedUser.avatar,
         token: generateToken(updatedUser._id),
       });
+    } else {
+      res.status(404);
+      return next(new Error('User not found'));
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get all seekers
+// @route   GET /api/auth/seekers
+// @access  Private/Recruiter
+export const getSeekers = async (req, res, next) => {
+  try {
+    const seekers = await User.find({ role: 'seeker' })
+      .select('name email avatar resume skills title bio createdAt')
+      .sort({ createdAt: -1 });
+    res.json(seekers);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Delete user profile
+// @route   DELETE /api/auth/profile
+// @access  Private
+export const deleteUserProfile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      await user.deleteOne();
+      res.json({ message: 'User removed' });
     } else {
       res.status(404);
       return next(new Error('User not found'));

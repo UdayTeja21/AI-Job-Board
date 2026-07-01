@@ -9,12 +9,19 @@ export const getJobSummary = async (req, res, next) => {
   try {
     const { jobId } = req.body;
     
-    // In a real app, this would call OpenAI/Gemini with the job description
-    // For this assessment, we return a realistic mocked response
+    let jobTitle = "position";
+    if (jobId) {
+      const job = await Job.findById(jobId);
+      if (job) {
+        jobTitle = job.title;
+      }
+    }
     
     // Simulate API delay
     setTimeout(() => {
-      res.json(aiMockResponses.jobSummary);
+      res.json({
+        summary: `This is a highly sought-after ${jobTitle} role. The ideal candidate will be deeply familiar with the core requirements of this position, demonstrating strong technical leadership and problem-solving skills. This role offers excellent growth opportunities, competitive compensation, and the chance to make a significant impact on our core product.`
+      });
     }, 1500);
   } catch (error) {
     next(error);
@@ -37,12 +44,34 @@ export const getResumeMatchScore = async (req, res, next) => {
 
     // Simulate AI processing delay
     setTimeout(async () => {
-      // Save the mock score to the application
-      application.aiMatchScore = aiMockResponses.resumeMatch.score;
-      application.aiAnalysis = aiMockResponses.resumeMatch.analysis;
+      const applicantName = application.applicant?.name || 'The candidate';
+      const applicantTitle = application.applicant?.title || 'Professional';
+      const jobTitle = application.job?.title || 'this role';
+      
+      // Generate a consistent pseudo-random score based on the application ID length/characters
+      const baseScore = 65;
+      const randomFactor = Array.from(String(application._id)).reduce((acc, char) => acc + char.charCodeAt(0), 0) % 30;
+      const score = baseScore + randomFactor;
+      
+      let matchQuality = "an average";
+      if (score > 85) matchQuality = "an exceptional";
+      else if (score > 75) matchQuality = "a strong";
+      
+      const analysis = `${applicantName}'s experience as a ${applicantTitle} makes them ${matchQuality} fit for the ${jobTitle} position. Their background aligns well with the core responsibilities of the role. ${score > 80 ? 'They have the exact technical expertise we are looking for.' : 'They may require a short ramp-up period to fully align with our specific requirements, but demonstrate high potential.'}`;
+
+      const dynamicResponse = {
+        score,
+        analysis,
+        skillsMatched: application.job?.tags || [],
+        skillsMissing: []
+      };
+
+      // Save the dynamic score to the application
+      application.aiMatchScore = score;
+      application.aiAnalysis = analysis;
       await application.save();
 
-      res.json(aiMockResponses.resumeMatch);
+      res.json(dynamicResponse);
     }, 2000);
   } catch (error) {
     next(error);

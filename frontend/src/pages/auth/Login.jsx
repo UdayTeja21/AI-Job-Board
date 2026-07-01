@@ -27,7 +27,7 @@ const Login = () => {
       toast.success('Logged in successfully');
       setIsSuccess(true);
       setTimeout(() => {
-        navigate('/dashboard');
+        navigate('/dashboard', { replace: true });
       }, 1500);
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to login');
