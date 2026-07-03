@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
@@ -15,7 +15,10 @@ const RecruiterCompany = () => {
     location: '',
     description: '',
     companySize: '1-10 employees',
+    logo: 'no-photo.jpg',
   });
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const fetchCompany = async () => {
@@ -28,6 +31,7 @@ const RecruiterCompany = () => {
             location: res.data.location || '',
             description: res.data.description || '',
             companySize: res.data.companySize || '1-10 employees',
+            logo: res.data.logo || 'no-photo.jpg',
           });
         }
       } catch (error) {
@@ -60,6 +64,28 @@ const RecruiterCompany = () => {
     }
   };
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('image', file);
+    setUploadingImage(true);
+    try {
+      const res = await api.post('/upload/image', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      setCompany(prev => ({ ...prev, logo: res.data.imageUrl }));
+      toast.success('Logo uploaded successfully');
+    } catch (error) {
+      toast.error('Failed to upload logo');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   if (fetching) {
     return <div className="p-8 text-center"><div className="animate-spin h-8 w-8 mx-auto border-4 border-primary border-t-transparent rounded-full" /></div>;
   }
@@ -78,12 +104,28 @@ const RecruiterCompany = () => {
         <CardContent>
           <form id="company-form" onSubmit={handleSubmit} className="space-y-6">
             <div className="flex items-center gap-6 pb-6 border-b border-border">
-              <div className="h-24 w-24 rounded-2xl bg-gray-100 dark:bg-gray-800 border-2 border-dashed border-border flex items-center justify-center text-text-muted hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer">
-                <div className="text-center">
-                  <Building2 className="h-8 w-8 mx-auto mb-1 opacity-50" />
-                  <span className="text-xs font-medium">Upload Logo</span>
-                </div>
+              <div 
+                onClick={() => fileInputRef.current?.click()}
+                className="h-24 w-24 rounded-2xl bg-gray-100 dark:bg-gray-800 border-2 border-dashed border-border flex items-center justify-center text-text-muted hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer overflow-hidden relative group"
+              >
+                {uploadingImage ? (
+                  <div className="animate-spin h-6 w-6 border-2 border-primary border-t-transparent rounded-full" />
+                ) : company.logo && company.logo !== 'no-photo.jpg' ? (
+                  <>
+                    <img src={company.logo.startsWith('http') ? company.logo : `http://localhost:5000${company.logo}`} alt="Logo" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                      <span className="text-xs font-medium text-white">Change</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center p-2">
+                    <Building2 className="h-8 w-8 mx-auto mb-1 opacity-50" />
+                    <span className="text-xs font-medium">Upload Logo</span>
+                  </div>
+                )}
               </div>
+              <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleImageUpload} />
+              
               <div className="space-y-1">
                 <h3 className="font-medium text-text">Company Logo</h3>
                 <p className="text-sm text-text-muted">Recommended size: 400x400px.</p>

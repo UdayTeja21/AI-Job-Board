@@ -4,10 +4,12 @@ import { motion } from 'framer-motion';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-hot-toast';
-import { MapPin, Briefcase, DollarSign, Calendar, Sparkles, Building2, Bot } from 'lucide-react';
+import { MapPin, Briefcase, IndianRupee, Calendar, Sparkles, Building2, Bot, CheckCircle } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Card, CardContent } from '../../components/ui/Card';
+import Modal from '../../components/ui/Modal';
+import { CardSkeleton } from '../../components/ui/Skeleton';
 import { cn } from '../../lib/utils';
 
 const JobDetails = () => {
@@ -15,6 +17,7 @@ const JobDetails = () => {
   const { user } = useAuth();
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [hasApplied, setHasApplied] = useState(false);
   
   const [aiSummary, setAiSummary] = useState('');
   const [loadingAi, setLoadingAi] = useState(false);
@@ -26,18 +29,27 @@ const JobDetails = () => {
   const [isGeneratingCoverLetter, setIsGeneratingCoverLetter] = useState(false);
 
   useEffect(() => {
-    const fetchJob = async () => {
+    const fetchJobAndApplicationStatus = async () => {
       try {
-        const res = await api.get(`/jobs/${id}`);
-        setJob(res.data);
+        const [jobRes, appsRes] = await Promise.all([
+          api.get(`/jobs/${id}`),
+          (user && user.role === 'seeker') ? api.get('/applications/my-applications') : Promise.resolve({ data: [] })
+        ]);
+        
+        setJob(jobRes.data);
+        
+        if (user && user.role === 'seeker') {
+          const applied = appsRes.data.some(app => app.job?._id === id || app.job === id);
+          setHasApplied(applied);
+        }
       } catch (error) {
         toast.error('Failed to load job details');
       } finally {
         setLoading(false);
       }
     };
-    fetchJob();
-  }, [id]);
+    fetchJobAndApplicationStatus();
+  }, [id, user]);
 
   const generateAiSummary = async () => {
     setLoadingAi(true);
@@ -108,7 +120,19 @@ const JobDetails = () => {
   };
 
   if (loading) {
-    return <div className="flex justify-center py-20"><div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" /></div>;
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-4xl space-y-8">
+        <div className="flex gap-8">
+          <div className="h-24 w-24 rounded-xl bg-border/60 animate-pulse" />
+          <div className="flex-1 space-y-4">
+            <div className="h-8 w-1/2 bg-border/60 animate-pulse rounded" />
+            <div className="h-6 w-1/3 bg-border/60 animate-pulse rounded" />
+          </div>
+        </div>
+        <CardSkeleton />
+        <CardSkeleton />
+      </div>
+    );
   }
 
   if (!job) {
@@ -133,7 +157,7 @@ const JobDetails = () => {
           <div className="flex flex-wrap gap-4 text-sm text-text-muted">
             <span className="flex items-center gap-1"><MapPin className="h-4 w-4" /> {job.location}</span>
             <span className="flex items-center gap-1"><Briefcase className="h-4 w-4" /> {job.workMode}</span>
-            <span className="flex items-center gap-1"><DollarSign className="h-4 w-4" /> ${job.salaryRange?.min.toLocaleString()} - ${job.salaryRange?.max.toLocaleString()}</span>
+            <span className="flex items-center gap-1"><IndianRupee className="h-4 w-4" /> ₹{job.salaryRange?.min.toLocaleString('en-IN')} - ₹{job.salaryRange?.max.toLocaleString('en-IN')}</span>
             <span className="flex items-center gap-1"><Calendar className="h-4 w-4" /> Posted {new Date(job.createdAt).toLocaleDateString()}</span>
           </div>
 
@@ -145,9 +169,15 @@ const JobDetails = () => {
 
         <div className="flex flex-col gap-3 min-w-[200px]">
           {user?.role !== 'recruiter' && user?.role !== 'admin' && (
-            <Button size="lg" className="w-full" onClick={() => user ? setIsApplyModalOpen(true) : window.location.href = '/login'}>
-              Apply Now
-            </Button>
+            hasApplied ? (
+              <Button size="lg" className="w-full bg-emerald-50 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-600 border-emerald-200 cursor-not-allowed opacity-100" disabled>
+                <CheckCircle className="w-5 h-5 mr-2" /> Already Applied
+              </Button>
+            ) : (
+              <Button size="lg" className="w-full" onClick={() => user ? setIsApplyModalOpen(true) : window.location.href = '/login'}>
+                Apply Now
+              </Button>
+            )
           )}
           <Button variant="secondary" onClick={generateAiSummary} isLoading={loadingAi} className="w-full group">
             <Sparkles className="h-4 w-4 mr-2 text-yellow-500 group-hover:animate-pulse" />
@@ -158,9 +188,9 @@ const JobDetails = () => {
 
       {aiSummary && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <Card className="border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-900/10 shadow-glow">
+          <Card className="border-primary/20 bg-primary/5 shadow-sm">
             <CardContent className="p-6">
-              <div className="flex items-center gap-2 mb-3 text-emerald-600 dark:text-emerald-400 font-semibold">
+              <div className="flex items-center gap-2 mb-3 text-primary font-semibold">
                 <Sparkles className="h-5 w-5" />
                 <h3>AI Generated Summary</h3>
               </div>
@@ -204,62 +234,58 @@ const JobDetails = () => {
         </div>
       </div>
 
-      {/* Application Modal (simplified implementation without creating a separate Modal component file if not strictly necessary, or I will create it in a moment) */}
-      {isApplyModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-surface rounded-xl shadow-2xl w-full max-w-lg overflow-hidden border border-border">
-            <div className="p-6 border-b border-border flex justify-between items-center">
-              <h3 className="text-xl font-bold">Apply for {job.title}</h3>
-              <button onClick={() => setIsApplyModalOpen(false)} className="text-text-muted hover:text-text">✕</button>
-            </div>
-            <form onSubmit={handleApply} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Resume Document</label>
-                <input 
-                  type="file" 
-                  accept=".pdf,.doc,.docx"
-                  className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" 
-                  onChange={(e) => setResumeFile(e.target.files[0])}
-                  required={!user?.resume}
-                />
-                {user?.resume && !resumeFile && (
-                  <p className="text-xs text-text-muted mt-1">Your saved resume will be used if you don't upload a new one.</p>
-                )}
-              </div>
-              <div>
-                <div className="flex justify-between items-center mb-1">
-                  <label className="block text-sm font-medium">Cover Letter (Optional)</label>
-                  <Button 
-                    type="button" 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={generateCoverLetter} 
-                    disabled={isGeneratingCoverLetter}
-                    className="text-primary hover:text-primary hover:bg-primary/10 h-8"
-                  >
-                    <Bot className="w-4 h-4 mr-2" />
-                    {isGeneratingCoverLetter ? 'Generating...' : 'Auto-Generate with AI'}
-                  </Button>
-                </div>
-                <textarea 
-                  className={cn(
-                    "w-full rounded-xl border bg-surface px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none transition-all",
-                    isGeneratingCoverLetter ? "border-primary/50 shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.2)]" : "border-border"
-                  )}
-                  rows="6"
-                  value={coverLetter}
-                  onChange={(e) => setCoverLetter(e.target.value)}
-                  placeholder="Why are you a great fit?"
-                />
-              </div>
-              <div className="flex justify-end gap-3 pt-4">
-                <Button variant="ghost" type="button" onClick={() => setIsApplyModalOpen(false)}>Cancel</Button>
-                <Button type="submit" isLoading={applying}>Submit Application</Button>
-              </div>
-            </form>
+      {/* Application Modal */}
+      <Modal 
+        isOpen={isApplyModalOpen} 
+        onClose={() => setIsApplyModalOpen(false)}
+        title={`Apply for ${job.title}`}
+      >
+        <form onSubmit={handleApply} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Resume Document</label>
+            <input 
+              type="file" 
+              accept=".pdf,.doc,.docx"
+              className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:font-medium file:bg-primary/10 file:text-primary hover:file:bg-primary/20" 
+              onChange={(e) => setResumeFile(e.target.files[0])}
+              required={!user?.resume}
+            />
+            {user?.resume && !resumeFile && (
+              <p className="text-xs text-text-muted mt-1">Your saved resume will be used if you don't upload a new one.</p>
+            )}
           </div>
-        </div>
-      )}
+          <div>
+            <div className="flex justify-between items-center mb-1">
+              <label className="block text-sm font-medium">Cover Letter (Optional)</label>
+              <Button 
+                type="button" 
+                variant="ghost" 
+                size="sm" 
+                onClick={generateCoverLetter} 
+                disabled={isGeneratingCoverLetter}
+                className="text-primary hover:text-primary hover:bg-primary/10 h-8"
+              >
+                <Bot className="w-4 h-4 mr-2" />
+                {isGeneratingCoverLetter ? 'Generating...' : 'Auto-Generate with AI'}
+              </Button>
+            </div>
+            <textarea 
+              className={cn(
+                "w-full rounded-xl border bg-surface px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none transition-all",
+                isGeneratingCoverLetter ? "border-primary/50 shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.2)]" : "border-border"
+              )}
+              rows="6"
+              value={coverLetter}
+              onChange={(e) => setCoverLetter(e.target.value)}
+              placeholder="Why are you a great fit?"
+            />
+          </div>
+          <div className="flex justify-end gap-3 pt-4">
+            <Button variant="ghost" type="button" onClick={() => setIsApplyModalOpen(false)}>Cancel</Button>
+            <Button type="submit" isLoading={applying}>Submit Application</Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 };

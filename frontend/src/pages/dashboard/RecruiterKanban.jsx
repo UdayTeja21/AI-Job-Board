@@ -7,8 +7,8 @@ import { cn } from '../../lib/utils';
 import Button from '../../components/ui/Button';
 
 const STAGES = [
-  { id: 'Applied', label: 'Applied', color: 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700', icon: Clock },
-  { id: 'Reviewing', label: 'Screening', color: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800/50', icon: Sparkles },
+  { id: 'Applied', label: 'Applied', color: 'bg-gray-50 dark:bg-gray-900/20 border-gray-200 dark:border-gray-800/50', icon: Clock },
+  { id: 'Reviewing', label: 'Screening', color: 'bg-sky-50 dark:bg-sky-900/20 border-sky-200 dark:border-sky-800/50', icon: Sparkles },
   { id: 'Interview', label: 'Interview', color: 'bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800/50', icon: CalendarDays },
   { id: 'Accepted', label: 'Hired', color: 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800/50', icon: CheckCircle },
   { id: 'Rejected', label: 'Rejected', color: 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800/50', icon: XCircle },

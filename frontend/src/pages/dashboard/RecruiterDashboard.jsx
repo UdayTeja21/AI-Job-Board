@@ -4,6 +4,7 @@ import api from '../../services/api';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
+import Modal from '../../components/ui/Modal';
 import { Users, Search, TrendingUp, UserPlus, ChevronRight, Briefcase, Calendar, CheckCircle, XCircle, Clock, CalendarDays, ExternalLink, Mail, X, Download, Sparkles } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import toast from 'react-hot-toast';
@@ -140,12 +141,12 @@ const RecruiterDashboard = () => {
 
   const getStatusBadge = (status) => {
     switch (status) {
-      case 'Applied': return <Badge className="bg-slate-100 text-slate-800 border-slate-200">Applied</Badge>;
-      case 'Reviewing': return <Badge className="bg-blue-100 text-blue-800 border-blue-200">Screening</Badge>;
-      case 'Interview': return <Badge className="bg-indigo-100 text-indigo-800 border-indigo-200">Interviewing</Badge>;
-      case 'Rejected': return <Badge className="bg-red-100 text-red-800 border-red-200">Rejected</Badge>;
-      case 'Accepted': return <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">Hired</Badge>;
-      default: return <Badge>{status}</Badge>;
+      case 'Applied': return <span style={{ color: '#1e40af' }} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 border border-slate-200">Applied</span>;
+      case 'Reviewing': return <span style={{ color: '#92400e' }} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 border border-blue-200">Screening</span>;
+      case 'Interview': return <span style={{ color: '#6b21a8' }} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 border border-indigo-200">Interviewing</span>;
+      case 'Rejected': return <span style={{ color: '#991b1b' }} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 border border-red-200">Rejected</span>;
+      case 'Accepted': return <span style={{ color: '#065f46' }} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 border border-emerald-200">Hired</span>;
+      default: return <span style={{ color: '#1f2937' }} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 border border-gray-200">{status}</span>;
     }
   };
 
@@ -183,26 +184,45 @@ const RecruiterDashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-8 pb-8 relative z-10">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                <div className="flex flex-col items-center p-5 bg-gradient-to-b from-slate-50 to-slate-100/50 dark:from-slate-800/40 dark:to-slate-800/10 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm relative overflow-hidden group/item">
-                  <div className="absolute top-0 left-0 w-full h-1 bg-slate-400"></div>
-                  <span className="text-4xl font-heading font-bold text-slate-700 dark:text-slate-300 group-hover/item:scale-110 transition-transform duration-300">{funnel.sourced}</span>
-                  <span className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-2">Total Apps</span>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {/* Total Apps */}
+                <div className="flex flex-col justify-center p-5 bg-[hsl(var(--surface))] hover:shadow-[0_8px_30px_rgb(217,70,239,0.12)] transition-all duration-300 rounded-xl border border-border group relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-fuchsia-500/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-fuchsia-500/10 transition-colors"></div>
+                  <div className="flex items-center gap-2 mb-3 relative z-10">
+                    <div className="w-2 h-2 rounded-full bg-gradient-to-r from-fuchsia-500 to-pink-500 shadow-[0_0_8px_rgba(217,70,239,0.5)]"></div>
+                    <span className="text-sm font-medium text-text-muted uppercase tracking-wider">Total Apps</span>
+                  </div>
+                  <span className="text-4xl font-heading font-bold bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-600 to-pink-500 relative z-10">{funnel.sourced}</span>
                 </div>
-                <div className="flex flex-col items-center p-5 bg-gradient-to-b from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-900/10 rounded-2xl border border-blue-200/50 dark:border-blue-800/30 shadow-sm relative overflow-hidden group/item">
-                  <div className="absolute top-0 left-0 w-full h-1 bg-blue-500"></div>
-                  <span className="text-4xl font-heading font-bold text-blue-600 dark:text-blue-400 group-hover/item:scale-110 transition-transform duration-300">{funnel.screening}</span>
-                  <span className="text-sm font-medium text-blue-800 dark:text-blue-300 mt-2">Screening</span>
+                
+                {/* Screening */}
+                <div className="flex flex-col justify-center p-5 bg-[hsl(var(--surface))] hover:shadow-[0_8px_30px_rgb(245,158,11,0.12)] transition-all duration-300 rounded-xl border border-border group relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-amber-500/10 transition-colors"></div>
+                  <div className="flex items-center gap-2 mb-3 relative z-10">
+                    <div className="w-2 h-2 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]"></div>
+                    <span className="text-sm font-medium text-text-muted uppercase tracking-wider">Screening</span>
+                  </div>
+                  <span className="text-4xl font-heading font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-orange-500 relative z-10">{funnel.screening}</span>
                 </div>
-                <div className="flex flex-col items-center p-5 bg-gradient-to-b from-indigo-50 to-indigo-100/50 dark:from-indigo-900/20 dark:to-indigo-900/10 rounded-2xl border border-indigo-200/50 dark:border-indigo-800/30 shadow-sm relative overflow-hidden group/item">
-                  <div className="absolute top-0 left-0 w-full h-1 bg-indigo-500"></div>
-                  <span className="text-4xl font-heading font-bold text-indigo-600 dark:text-indigo-400 group-hover/item:scale-110 transition-transform duration-300">{funnel.interviewing}</span>
-                  <span className="text-sm font-medium text-indigo-800 dark:text-indigo-300 mt-2">Interviewing</span>
+                
+                {/* Interviewing */}
+                <div className="flex flex-col justify-center p-5 bg-[hsl(var(--surface))] hover:shadow-[0_8px_30px_rgb(6,182,212,0.12)] transition-all duration-300 rounded-xl border border-border group relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-cyan-500/10 transition-colors"></div>
+                  <div className="flex items-center gap-2 mb-3 relative z-10">
+                    <div className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 shadow-[0_0_8px_rgba(6,182,212,0.5)]"></div>
+                    <span className="text-sm font-medium text-text-muted uppercase tracking-wider">Interviewing</span>
+                  </div>
+                  <span className="text-4xl font-heading font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 to-blue-500 relative z-10">{funnel.interviewing}</span>
                 </div>
-                <div className="flex flex-col items-center p-5 bg-gradient-to-b from-primary/10 to-primary/5 dark:from-primary/20 dark:to-primary/5 rounded-2xl border border-primary/20 dark:border-primary/20 shadow-sm relative overflow-hidden group/item">
-                  <div className="absolute top-0 left-0 w-full h-1 bg-primary"></div>
-                  <span className="text-4xl font-heading font-bold text-primary group-hover/item:scale-110 transition-transform duration-300">{funnel.hired}</span>
-                  <span className="text-sm font-medium text-primary mt-2">Hired</span>
+                
+                {/* Hired */}
+                <div className="flex flex-col justify-center p-5 bg-[hsl(var(--surface))] hover:shadow-[0_8px_30px_rgb(16,185,129,0.12)] transition-all duration-300 rounded-xl border border-border group relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-emerald-500/10 transition-colors"></div>
+                  <div className="flex items-center gap-2 mb-3 relative z-10">
+                    <div className="w-2 h-2 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+                    <span className="text-sm font-medium text-text-muted uppercase tracking-wider">Hired</span>
+                  </div>
+                  <span className="text-4xl font-heading font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-teal-500 relative z-10">{funnel.hired}</span>
                 </div>
               </div>
             </CardContent>
@@ -311,17 +331,15 @@ const RecruiterDashboard = () => {
       </div>
 
       {/* Application Actions Modal */}
-      {selectedApp && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-surface w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-slide-up border border-border relative">
-            <button 
-              onClick={() => setSelectedApp(null)}
-              className="absolute top-4 right-4 p-2 rounded-full hover:bg-[hsl(var(--surface-hover))] transition-colors text-text-muted hover:text-text z-10"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            
-            <div className="p-8 pb-6 border-b border-border/50 relative overflow-hidden">
+      <Modal
+        isOpen={!!selectedApp}
+        onClose={() => setSelectedApp(null)}
+        title={selectedApp ? `Applicant: ${selectedApp.name}` : ''}
+        className="max-w-xl"
+      >
+        {selectedApp && (
+          <div className="space-y-6">
+            <div className="pb-6 border-b border-border/50 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-40 h-40 bg-primary/10 rounded-full blur-2xl -z-10 translate-x-1/2 -translate-y-1/2"></div>
               
               <div className="flex items-center gap-5">
@@ -396,7 +414,7 @@ const RecruiterDashboard = () => {
 
               <div>
                 <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wider mb-3">Application Pipeline Actions</h3>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Button 
                     variant="outline" 
                     className={cn("justify-start", selectedApp.status === 'Reviewing' && 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800')}
@@ -433,69 +451,64 @@ const RecruiterDashboard = () => {
               </div>
             </div>
             
-            <div className="p-6 border-t border-border/50 bg-[hsl(var(--surface-hover)/0.5)] flex justify-between items-center">
+            
+            <div className="pt-4 flex justify-between items-center border-t border-border">
               <Button variant="ghost" className="text-text-muted" asChild>
                 <a href={`/dashboard/applications/${selectedApp._id}`}><ExternalLink className="w-4 h-4 mr-2" /> View Full Profile</a>
               </Button>
               <Button variant="secondary" onClick={() => setSelectedApp(null)}>Close</Button>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
 
       {/* Schedule Interview Modal */}
-      {isInterviewModalOpen && selectedApp && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-surface w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-slide-up border border-border relative">
-            <div className="p-6 border-b border-border/50 bg-[hsl(var(--surface-hover)/0.5)]">
-              <h2 className="text-xl font-heading font-bold flex items-center gap-2">
-                <CalendarDays className="w-5 h-5 text-indigo-500" />
-                Schedule Interview with {selectedApp.name}
-              </h2>
+      <Modal
+        isOpen={isInterviewModalOpen}
+        onClose={() => setIsInterviewModalOpen(false)}
+        title={selectedApp ? `Schedule Interview with ${selectedApp.name}` : 'Schedule Interview'}
+      >
+        <form onSubmit={handleScheduleInterview}>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-text">Proposed Time Slots</label>
+              <textarea 
+                required
+                placeholder="e.g. Monday 10:00 AM EST, Thursday 2:00 PM EST"
+                className="w-full min-h-[80px] rounded-xl border border-border bg-[hsl(var(--surface))] px-4 py-3 text-text focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all shadow-sm"
+                value={interviewForm.availableSlots}
+                onChange={(e) => setInterviewForm({...interviewForm, availableSlots: e.target.value})}
+              />
             </div>
-            <form onSubmit={handleScheduleInterview}>
-              <div className="p-6 space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-text">Proposed Time Slots</label>
-                  <textarea 
-                    required
-                    placeholder="e.g. Monday 10:00 AM EST, Thursday 2:00 PM EST"
-                    className="w-full min-h-[80px] rounded-xl border border-border bg-[hsl(var(--surface))] px-4 py-3 text-text focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all shadow-sm"
-                    value={interviewForm.availableSlots}
-                    onChange={(e) => setInterviewForm({...interviewForm, availableSlots: e.target.value})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-text">Meeting Link</label>
-                  <input 
-                    type="url"
-                    required
-                    placeholder="https://meet.google.com/..."
-                    className="w-full h-11 rounded-xl border border-border bg-[hsl(var(--surface))] px-4 text-text focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all shadow-sm"
-                    value={interviewForm.meetingLink}
-                    onChange={(e) => setInterviewForm({...interviewForm, meetingLink: e.target.value})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-text">Message to Candidate (Optional)</label>
-                  <textarea 
-                    placeholder="Looking forward to chatting!"
-                    className="w-full min-h-[80px] rounded-xl border border-border bg-[hsl(var(--surface))] px-4 py-3 text-text focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all shadow-sm"
-                    value={interviewForm.message}
-                    onChange={(e) => setInterviewForm({...interviewForm, message: e.target.value})}
-                  />
-                </div>
-              </div>
-              <div className="p-6 border-t border-border/50 bg-[hsl(var(--surface-hover)/0.5)] flex justify-end gap-3">
-                <Button type="button" variant="ghost" onClick={() => setIsInterviewModalOpen(false)}>Cancel</Button>
-                <Button type="submit" isLoading={isUpdatingStatus} className="bg-indigo-600 hover:bg-indigo-700 text-white">
-                  Send Invite
-                </Button>
-              </div>
-            </form>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-text">Meeting Link</label>
+              <input 
+                type="url"
+                required
+                placeholder="https://meet.google.com/..."
+                className="w-full h-11 rounded-xl border border-border bg-[hsl(var(--surface))] px-4 text-text focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all shadow-sm"
+                value={interviewForm.meetingLink}
+                onChange={(e) => setInterviewForm({...interviewForm, meetingLink: e.target.value})}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-text">Message to Candidate (Optional)</label>
+              <textarea 
+                placeholder="Looking forward to chatting!"
+                className="w-full min-h-[80px] rounded-xl border border-border bg-[hsl(var(--surface))] px-4 py-3 text-text focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all shadow-sm"
+                value={interviewForm.message}
+                onChange={(e) => setInterviewForm({...interviewForm, message: e.target.value})}
+              />
+            </div>
           </div>
-        </div>
-      )}
+          <div className="pt-6 flex justify-end gap-3 mt-4 border-t border-border">
+            <Button type="button" variant="ghost" onClick={() => setIsInterviewModalOpen(false)}>Cancel</Button>
+            <Button type="submit" isLoading={isUpdatingStatus} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+              Send Invite
+            </Button>
+          </div>
+        </form>
+      </Modal>
 
     </div>
   );

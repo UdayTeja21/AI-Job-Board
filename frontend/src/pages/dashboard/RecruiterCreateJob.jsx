@@ -5,7 +5,7 @@ import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import { toast } from 'react-hot-toast';
 import api from '../../services/api';
-import { Briefcase, MapPin, DollarSign } from 'lucide-react';
+import { Briefcase, MapPin, IndianRupee } from 'lucide-react';
 
 const RecruiterCreateJob = () => {
   const navigate = useNavigate();
@@ -161,11 +161,11 @@ const RecruiterCreateJob = () => {
 
             <div className="grid md:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-text flex items-center gap-2"><DollarSign className="h-4 w-4 text-text-muted" /> Min Salary</label>
+                <label className="text-sm font-medium text-text flex items-center gap-2"><IndianRupee className="h-4 w-4 text-text-muted" /> Min Salary</label>
                 <Input type="number" name="salaryMin" value={jobData.salaryMin} onChange={handleChange} required placeholder="e.g. 80000" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-text flex items-center gap-2"><DollarSign className="h-4 w-4 text-text-muted" /> Max Salary</label>
+                <label className="text-sm font-medium text-text flex items-center gap-2"><IndianRupee className="h-4 w-4 text-text-muted" /> Max Salary</label>
                 <Input type="number" name="salaryMax" value={jobData.salaryMax} onChange={handleChange} required placeholder="e.g. 120000" />
               </div>
               

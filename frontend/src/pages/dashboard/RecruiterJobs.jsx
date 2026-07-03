@@ -57,9 +57,11 @@ const RecruiterJobs = () => {
           <h1 className="text-2xl font-heading font-bold text-text">Manage Jobs</h1>
           <p className="text-text-muted mt-1 text-sm">Create, edit, and manage your job postings.</p>
         </div>
-        <Button className="flex items-center gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/40" asChild>
-          <Link to="/dashboard/jobs/new"><Plus className="h-4 w-4" /> Post New Job</Link>
-        </Button>
+        <Link to="/dashboard/jobs/new">
+          <Button className="flex items-center gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/40">
+            <Plus className="h-4 w-4" /> Post a New Job
+          </Button>
+        </Link>
       </div>
 
       <Card className="border-none shadow-soft overflow-hidden">
@@ -71,7 +73,9 @@ const RecruiterJobs = () => {
               <Briefcase className="w-12 h-12 text-text-muted/50 mx-auto mb-4" />
               <h3 className="text-xl font-medium">No jobs posted yet</h3>
               <p className="text-text-muted text-sm mt-1 mb-6 max-w-md mx-auto">Post your first job to start building your hiring pipeline.</p>
-              <Button asChild><Link to="/dashboard/jobs/new">Create Job Post</Link></Button>
+              <Link to="/dashboard/jobs/new">
+                <Button>Create Job Post</Button>
+              </Link>
             </div>
           ) : (
             <table className="w-full text-left border-collapse">
@@ -99,7 +103,7 @@ const RecruiterJobs = () => {
                     </td>
                     <td className="px-6 py-5">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wider ${
-                        job.status === 'Active' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
+                        job.status === 'Active' ? 'bg-white text-green-600 dark:bg-transparent dark:text-green-500' : 'bg-white text-gray-600 dark:bg-transparent dark:text-gray-400'
                       }`}>
                         {job.status || 'Active'}
                       </span>

@@ -11,20 +11,20 @@ const LandingPage = () => {
     <div className="flex flex-col w-full">
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-20 pb-32">
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-50 to-transparent dark:from-blue-950/20 dark:to-transparent -z-10" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-background to-background -z-10" />
         <div className="container mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium text-blue-800 bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 mb-8">
+            <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium border border-primary/20 bg-primary/5 text-primary mb-8">
               <Sparkles className="w-4 h-4 mr-2" />
               AI-Powered Matchmaking is now live
             </div>
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-text mb-6">
+            <h1 className="text-5xl md:text-7xl font-heading font-bold tracking-tight text-text mb-6">
               Find your next role with <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500">
+              <span className="text-primary">
                 precision & speed.
               </span>
             </h1>
@@ -37,7 +37,7 @@ const LandingPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="max-w-4xl mx-auto bg-surface p-4 rounded-2xl shadow-glow border border-border flex flex-col md:flex-row gap-4"
+            className="max-w-4xl mx-auto bg-surface p-3 rounded-2xl shadow-premium border border-border flex flex-col md:flex-row gap-3"
           >
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-3 h-5 w-5 text-text-muted" />
@@ -74,7 +74,7 @@ const LandingPage = () => {
               { label: 'Success Rate', value: '94%', icon: TrendingUp },
             ].map((stat, idx) => (
               <div key={idx} className="flex flex-col items-center">
-                <div className="h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-4 text-primary">
+                <div className="h-12 w-12 rounded-xl border border-border bg-surface flex items-center justify-center mb-4 text-text">
                   <stat.icon className="h-6 w-6" />
                 </div>
                 <h3 className="text-3xl font-bold text-text">{stat.value}</h3>
@@ -108,9 +108,9 @@ const LandingPage = () => {
                 description: 'Discover exactly what skills you need to land your dream role, complete with personalized learning paths.',
               },
             ].map((feature, idx) => (
-              <Card key={idx} className="bg-surface hover:shadow-lg transition-shadow border-none shadow-soft">
+              <Card key={idx} className="bg-surface hover:shadow-premium transition-shadow border-border shadow-sm">
                 <CardContent className="p-8 text-center">
-                  <div className="h-12 w-12 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-primary flex items-center justify-center mx-auto mb-6">
+                  <div className="h-12 w-12 rounded-xl border border-border bg-surface text-primary flex items-center justify-center mx-auto mb-6">
                     <CheckCircle2 className="h-6 w-6" />
                   </div>
                   <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
@@ -123,20 +123,20 @@ const LandingPage = () => {
       </section>
       
       {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+      <section className="py-24 bg-text text-surface">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to accelerate your career?</h2>
-          <p className="text-blue-100 text-lg mb-10 max-w-2xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6">Ready to accelerate your career?</h2>
+          <p className="text-surface/70 text-lg mb-10 max-w-2xl mx-auto">
             Join thousands of professionals who have found their dream roles using our AI-powered platform.
           </p>
-          <div className="flex justify-center gap-4">
-            <Link to="/register">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+            <Link to="/register" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full bg-surface text-text hover:bg-surface-hover">
                 Create Free Account
               </Button>
             </Link>
-            <Link to="/jobs">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+            <Link to="/jobs" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full bg-transparent border border-surface/20 text-surface hover:bg-surface/10 hover:border-surface/30 shadow-none">
                 Browse Jobs
               </Button>
             </Link>

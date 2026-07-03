@@ -3,14 +3,19 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '../../comp
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import { useAuth } from '../../context/AuthContext';
-import { User, Mail, Briefcase, FileText, Lock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { User, Mail, Briefcase, FileText, Lock, AlertTriangle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import api from '../../services/api';
+import Modal from '../../components/ui/Modal';
 
 const DashboardSettings = () => {
   const { user, login, logout } = useAuth(); // Need to update auth context if profile changes
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [pwdLoading, setPwdLoading] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -81,14 +86,16 @@ const DashboardSettings = () => {
   };
 
   const handleDeleteAccount = async () => {
-    if (window.confirm('Are you absolutely sure you want to delete your account? This action cannot be undone.')) {
-      try {
-        await api.delete('/auth/profile');
-        logout();
-        toast.success('Account deleted successfully');
-      } catch (error) {
-        toast.error('Failed to delete account');
-      }
+    setDeleteLoading(true);
+    try {
+      await api.delete('/auth/profile');
+      setIsDeleteModalOpen(false);
+      logout();
+      navigate('/login', { replace: true });
+      toast.success('Account deleted successfully');
+    } catch (error) {
+      toast.error('Failed to delete account');
+      setDeleteLoading(false);
     }
   };
 
@@ -160,7 +167,7 @@ const DashboardSettings = () => {
               <Button 
                 variant="outline" 
                 className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-300 dark:border-red-900/30 dark:hover:bg-red-900/20"
-                onClick={handleDeleteAccount}
+                onClick={() => setIsDeleteModalOpen(true)}
               >
                 Delete Account
               </Button>
@@ -191,6 +198,34 @@ const DashboardSettings = () => {
           </Card>
         </div>
       </div>
+
+      {/* Delete Account Modal */}
+      <Modal 
+        isOpen={isDeleteModalOpen} 
+        onClose={() => setIsDeleteModalOpen(false)} 
+        title="Delete Account"
+      >
+        <div className="space-y-4 text-center">
+          <div className="mx-auto w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 mb-4">
+            <AlertTriangle className="h-6 w-6" />
+          </div>
+          <p className="text-text font-medium text-lg">Are you absolutely sure you want to delete your account?</p>
+          <p className="text-text-muted text-sm px-4">This action cannot be undone. This will permanently delete your account and remove your data from our servers.</p>
+          <div className="flex gap-3 justify-center pt-6">
+            <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              variant="primary" 
+              className="bg-red-600 hover:bg-red-700 text-white border-red-600"
+              onClick={handleDeleteAccount}
+              isLoading={deleteLoading}
+            >
+              Yes, Delete Account
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

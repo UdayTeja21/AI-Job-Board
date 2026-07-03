@@ -37,12 +37,12 @@ const SeekerDashboard = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'Applied': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-800';
-      case 'Reviewing': return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border-amber-200 dark:border-amber-800';
-      case 'Interview': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300 border-purple-200 dark:border-purple-800';
-      case 'Rejected': return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 border-red-200 dark:border-red-800';
-      case 'Accepted': return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300 border-gray-200 dark:border-gray-700';
+      case 'Applied': return { className: 'bg-blue-100 border-blue-200 dark:bg-blue-900/30 dark:border-blue-800', style: { color: '#1e40af' } };
+      case 'Reviewing': return { className: 'bg-amber-100 border-amber-200 dark:bg-amber-900/30 dark:border-amber-800', style: { color: '#92400e' } };
+      case 'Interview': return { className: 'bg-purple-100 border-purple-200 dark:bg-purple-900/30 dark:border-purple-800', style: { color: '#6b21a8' } };
+      case 'Rejected': return { className: 'bg-red-100 border-red-200 dark:bg-red-900/30 dark:border-red-800', style: { color: '#991b1b' } };
+      case 'Accepted': return { className: 'bg-emerald-100 border-emerald-200 dark:bg-emerald-900/30 dark:border-emerald-800', style: { color: '#065f46' } };
+      default: return { className: 'bg-gray-100 border-gray-200 dark:bg-gray-800 dark:border-gray-700', style: { color: '#1f2937' } };
     }
   };
 
@@ -137,9 +137,9 @@ const SeekerDashboard = () => {
                       </div>
                     </div>
                     <div className="flex flex-col sm:items-end gap-2 mt-4 sm:mt-0">
-                      <Badge className={cn("px-2.5 py-1 text-xs border font-medium", getStatusColor(app.status))}>
+                      <span style={getStatusColor(app.status).style} className={cn("inline-flex items-center px-2.5 py-1 rounded-full text-xs border font-medium", getStatusColor(app.status).className)}>
                         {app.status}
-                      </Badge>
+                      </span>
                       <span className="text-xs text-text-muted">Applied {new Date(app.createdAt).toLocaleDateString()}</span>
                     </div>
                   </CardContent>

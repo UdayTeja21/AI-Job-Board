@@ -37,40 +37,40 @@
 
 @layer base {
   :root {
-    /* Premium Light Mode Colors */
-    --background: 210 40% 98%; /* Soft tinted white */
+    /* Premium Light Mode Colors - Linear/Vercel Aesthetic */
+    --background: 0 0% 98.5%;
     --surface: 0 0% 100%;
-    --surface-hover: 210 20% 96%;
-    --primary: 221 83% 53%; /* Elegant Royal Blue */
-    --primary-foreground: 210 40% 98%;
-    --accent: 199 89% 48%; /* Vibrant Cyan Accent */
-    --text: 222 47% 11%;
-    --text-muted: 215 16% 47%;
-    --border: 214 32% 91%;
-    --danger: 0 84% 60%;
-    --success: 142 71% 45%;
-    --warning: 38 92% 50%;
+    --surface-hover: 0 0% 96%;
+    --primary: 230 100% 64%; /* Sleek Vercel-like Blue */
+    --primary-foreground: 0 0% 100%;
+    --accent: 230 100% 96%;
+    --text: 0 0% 9%;
+    --text-muted: 0 0% 45%;
+    --border: 0 0% 89%;
+    --danger: 354 70% 54%;
+    --success: 160 84% 39%;
+    --warning: 48 96% 53%;
   }
 
   .dark {
-    /* Premium Dark Mode - Midnight Blue theme */
-    --background: 222 47% 7%;
-    --surface: 222 47% 11%;
-    --surface-hover: 222 47% 15%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 222 47% 11%;
-    --accent: 199 89% 48%;
-    --text: 210 40% 98%;
-    --text-muted: 215 20% 65%;
-    --border: 217 33% 17%;
-    --danger: 0 72% 51%;
-    --success: 142 71% 45%;
-    --warning: 38 92% 50%;
+    /* Premium Dark Mode - Deep minimal gray */
+    --background: 0 0% 4%;
+    --surface: 0 0% 7%;
+    --surface-hover: 0 0% 12%;
+    --primary: 230 100% 64%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 0 0% 14%;
+    --text: 0 0% 95%;
+    --text-muted: 0 0% 60%;
+    --border: 0 0% 14%;
+    --danger: 354 70% 54%;
+    --success: 160 84% 39%;
+    --warning: 48 96% 53%;
   }
 
   body {
     @apply bg-[hsl(var(--background))] text-[hsl(var(--text))] font-sans antialiased transition-colors duration-300;
-    /* Optional subtle noise/texture for premium feel */
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -89,5 +89,14 @@
 
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))];
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }

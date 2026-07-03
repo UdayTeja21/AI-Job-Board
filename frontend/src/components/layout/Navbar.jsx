@@ -14,11 +14,11 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <header className="sticky top-0 z-50 w-full glass-panel border-b-0 rounded-none shadow-sm">
+    <header className="sticky top-0 z-50 w-full bg-surface/80 backdrop-blur-md border-b border-border shadow-sm">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
           <Briefcase className="h-6 w-6 text-primary" />
-          <span className="text-xl font-bold tracking-tight">AI Job Board</span>
+          <span className="text-xl font-heading font-bold tracking-tight text-text">AI Job Board</span>
         </Link>
 
         <nav className="hidden md:flex items-center space-x-6">
@@ -135,7 +135,7 @@ const Navbar = () => {
               onClick={() => {
                 setIsLogoutModalOpen(false);
                 logout();
-                navigate('/', { replace: true });
+                navigate('/login', { replace: true });
               }}
             >
               Yes, Log Out

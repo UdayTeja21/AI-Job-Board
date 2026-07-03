@@ -34,7 +34,7 @@ const DashboardLayout = ({ allowedRoles }) => {
       case 'recruiter':
         return [
           { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
-          { name: 'ATS Board', href: '/dashboard/kanban', icon: Users },
+          { name: 'ATS Board', href: '/dashboard/ats-board', icon: Users },
           { name: 'Manage Jobs', href: '/dashboard/jobs', icon: Briefcase },
           { name: 'Company Profile', href: '/dashboard/company', icon: Building2 },
           { name: 'Settings', href: '/dashboard/settings', icon: Settings },

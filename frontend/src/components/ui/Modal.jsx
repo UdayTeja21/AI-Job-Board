@@ -24,11 +24,11 @@ export function Modal({ isOpen, onClose, title, children, className }) {
       {/* Modal Content */}
       <div 
         className={cn(
-          "relative bg-surface rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden animate-in fade-in zoom-in-95 duration-200 border border-border",
+          "relative bg-surface rounded-xl shadow-premium w-full max-w-md mx-4 overflow-hidden animate-scale-in duration-200 border border-border",
           className
         )}
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-gray-50/50 dark:bg-gray-800/30">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-surface">
           <h3 className="text-lg font-semibold text-text">{title}</h3>
           <button 
             onClick={onClose}

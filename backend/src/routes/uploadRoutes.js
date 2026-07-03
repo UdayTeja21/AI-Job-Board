@@ -53,4 +53,15 @@ router.post('/', upload.single('resume'), (req, res) => {
   }
 });
 
+router.post('/image', upload.single('image'), (req, res) => {
+  if (req.file) {
+    res.send({
+      message: 'Image Uploaded',
+      imageUrl: `/${req.file.path.replace(/\\\\/g, '/')}`,
+    });
+  } else {
+    res.status(400).send({ message: 'No image uploaded' });
+  }
+});
+
 export default router;

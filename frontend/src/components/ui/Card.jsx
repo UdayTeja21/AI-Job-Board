@@ -5,8 +5,8 @@ export function Card({ className, children, hoverEffect = false, ...props }) {
   return (
     <div 
       className={cn(
-        "glass-card rounded-2xl overflow-hidden transition-all duration-300", 
-        hoverEffect && "hover:shadow-glow hover:-translate-y-1 hover:border-primary/30",
+        "bg-surface border border-border rounded-xl overflow-hidden transition-all duration-200 shadow-sm", 
+        hoverEffect && "hover:shadow-md hover:border-border/80 hover:-translate-y-[2px]",
         className
       )} 
       {...props}

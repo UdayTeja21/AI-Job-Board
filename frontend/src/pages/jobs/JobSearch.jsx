@@ -6,6 +6,8 @@ import { Card, CardContent } from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
+import { CardSkeleton } from '../../components/ui/Skeleton';
+import toast from 'react-hot-toast';
 
 const JobSearch = () => {
   const [jobs, setJobs] = useState([]);
@@ -40,6 +42,7 @@ const JobSearch = () => {
         setPages(res.data.pages);
       } catch (error) {
         console.error('Error fetching jobs', error);
+        toast.error('Failed to fetch jobs. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -59,7 +62,7 @@ const JobSearch = () => {
         <h1 className="text-3xl font-bold">Find your next opportunity</h1>
         
         <div className="bg-surface p-4 rounded-xl shadow-sm border border-border flex flex-col md:flex-row gap-4">
-          <div className="flex-1 relative">
+          <div className="w-full relative">
             <Search className="absolute left-3 top-3 h-5 w-5 text-text-muted" />
             <Input 
               placeholder="Job title or keyword" 
@@ -68,7 +71,7 @@ const JobSearch = () => {
               onChange={(e) => setKeyword(e.target.value)}
             />
           </div>
-          <div className="flex-1 relative">
+          <div className="w-full relative">
             <MapPin className="absolute left-3 top-3 h-5 w-5 text-text-muted" />
             <Input 
               placeholder="Location" 
@@ -77,7 +80,7 @@ const JobSearch = () => {
               onChange={(e) => setLocation(e.target.value)}
             />
           </div>
-          <Button className="md:w-auto w-full">Search</Button>
+          <Button className="w-full md:w-auto px-8 shrink-0">Search</Button>
         </div>
       </div>
 
@@ -125,7 +128,7 @@ const JobSearch = () => {
           {loading ? (
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (
-                <Card key={i} className="animate-pulse h-32" />
+                <CardSkeleton key={i} />
               ))}
             </div>
           ) : jobs.length === 0 ? (
@@ -159,7 +162,7 @@ const JobSearch = () => {
                       </div>
                     </div>
 
-                    <div className="flex sm:flex-col gap-2 w-full sm:w-auto">
+                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto mt-4 sm:mt-0">
                       <Link to={`/jobs/${job._id}`} className="w-full">
                         <Button className="w-full">Apply Now</Button>
                       </Link>
