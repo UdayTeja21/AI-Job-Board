@@ -1,7 +1,13 @@
 import axios from 'axios';
 
+let baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Ensure baseURL always ends with /api if the user forgot it in their environment variable
+if (baseURL && !baseURL.endsWith('/api') && !baseURL.includes('localhost')) {
+  baseURL = `${baseURL.replace(/\/$/, '')}/api`;
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL,
 });
 
 // Add a request interceptor to add the JWT token
