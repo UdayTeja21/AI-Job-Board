@@ -72,11 +72,7 @@ const RecruiterCompany = () => {
     formData.append('image', file);
     setUploadingImage(true);
     try {
-      const res = await api.post('/upload/image', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const res = await api.post('/upload/image', formData);
       setCompany(prev => ({ ...prev, logo: res.data.imageUrl }));
       toast.success('Logo uploaded successfully');
     } catch (error) {

@@ -97,11 +97,7 @@ const JobDetails = () => {
         const formData = new FormData();
         formData.append('resume', resumeFile);
         
-        const uploadRes = await api.post('/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
+        const uploadRes = await api.post('/upload', formData);
         finalResumeUrl = uploadRes.data.resumeUrl;
       }
 
