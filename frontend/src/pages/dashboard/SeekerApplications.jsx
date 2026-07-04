@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '../../components/ui/Card';
-import { Briefcase, Building2, MapPin, Sparkles, Clock, CheckCircle, XCircle, MoreVertical, BellRing, CalendarDays } from 'lucide-react';
+import { Briefcase, Building2, MapPin, Sparkles, Clock, CheckCircle, XCircle, MoreVertical, BellRing, CalendarDays, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import Button from '../../components/ui/Button';
