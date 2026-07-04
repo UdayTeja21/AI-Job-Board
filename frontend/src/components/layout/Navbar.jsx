@@ -22,12 +22,16 @@ const Navbar = () => {
         </Link>
 
         <nav className="hidden md:flex items-center space-x-6">
-          <Link to="/jobs" className="text-sm font-medium text-text-muted hover:text-text transition-colors">
-            Find Jobs
-          </Link>
-          <Link to="/companies" className="text-sm font-medium text-text-muted hover:text-text transition-colors">
-            Companies
-          </Link>
+          {(!user || user.role !== 'recruiter') && (
+            <>
+              <Link to="/jobs" className="text-sm font-medium text-text-muted hover:text-text transition-colors">
+                Find Jobs
+              </Link>
+              <Link to="/companies" className="text-sm font-medium text-text-muted hover:text-text transition-colors">
+                Companies
+              </Link>
+            </>
+          )}
         </nav>
 
         <div className="flex items-center space-x-4">
@@ -72,12 +76,16 @@ const Navbar = () => {
       {isMobileMenuOpen && (
         <div className="md:hidden bg-surface border-b border-border shadow-lg">
           <nav className="flex flex-col p-4 space-y-4">
-            <Link to="/jobs" className="text-base font-medium text-text-muted hover:text-text transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-              Find Jobs
-            </Link>
-            <Link to="/companies" className="text-base font-medium text-text-muted hover:text-text transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-              Companies
-            </Link>
+            {(!user || user.role !== 'recruiter') && (
+              <>
+                <Link to="/jobs" className="text-base font-medium text-text-muted hover:text-text transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                  Find Jobs
+                </Link>
+                <Link to="/companies" className="text-base font-medium text-text-muted hover:text-text transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                  Companies
+                </Link>
+              </>
+            )}
             
             <div className="pt-4 border-t border-border">
               {user ? (

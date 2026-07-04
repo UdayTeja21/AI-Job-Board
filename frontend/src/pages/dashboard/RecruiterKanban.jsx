@@ -274,7 +274,7 @@ const RecruiterKanban = () => {
                   </h3>
                   {selectedApp.resume && (
                     <Button variant="outline" size="sm" asChild className="h-8 text-xs font-semibold">
-                      <a href={selectedApp.resume.startsWith('http') ? selectedApp.resume : `http://localhost:5000${selectedApp.resume}`} target="_blank" rel="noreferrer">
+                      <a href={selectedApp.resume.startsWith('http') ? selectedApp.resume : `${(import.meta.env.VITE_API_URL || 'http://localhost:5000').replace('/api', '')}${selectedApp.resume}`} target="_blank" rel="noreferrer">
                         View Resume <ExternalLink className="w-3 h-3 ml-1" />
                       </a>
                     </Button>
