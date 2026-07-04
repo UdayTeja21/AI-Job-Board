@@ -120,7 +120,18 @@ export const getResumeMatchScore = async (req, res, next) => {
     
     let dynamicResponse;
     try {
+      // Find the first '{' and last '}' to handle extra text
+      const firstBrace = textResult.indexOf('{');
+      const lastBrace = textResult.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+        textResult = textResult.substring(firstBrace, lastBrace + 1);
+      }
       dynamicResponse = JSON.parse(textResult);
+      
+      // Handle potential AI key hallucinations
+      if (dynamicResponse.score === undefined && dynamicResponse.matchScore !== undefined) {
+        dynamicResponse.score = dynamicResponse.matchScore;
+      }
     } catch (parseError) {
       // Fallback if parsing fails
       dynamicResponse = {
