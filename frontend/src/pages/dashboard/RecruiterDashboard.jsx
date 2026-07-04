@@ -366,14 +366,14 @@ const RecruiterDashboard = () => {
                   </h3>
                   {selectedApp.resume && (
                     <Button variant="outline" size="sm" asChild className="h-8 text-xs font-semibold">
-                      <a href={selectedApp.resume.startsWith('http') ? selectedApp.resume : `http://localhost:5000${selectedApp.resume}`} target="_blank" rel="noreferrer">
+                      <a href={selectedApp.resume.startsWith('http') ? selectedApp.resume : `${(import.meta.env.VITE_API_URL || 'http://localhost:5000').replace('/api', '')}${selectedApp.resume}`} target="_blank" rel="noreferrer">
                         View Resume <ExternalLink className="w-3 h-3 ml-1" />
                       </a>
                     </Button>
                   )}
                 </div>
                 
-                {selectedApp.aiMatchScore ? (
+                {selectedApp.aiMatchScore !== null && selectedApp.aiMatchScore !== undefined ? (
                   <div className="space-y-3 animate-fade-in">
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900/30 border-4 border-emerald-500 flex items-center justify-center font-bold text-xl text-emerald-600 dark:text-emerald-400">

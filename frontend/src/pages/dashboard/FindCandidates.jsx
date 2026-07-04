@@ -177,7 +177,7 @@ const FindCandidates = () => {
             <div className="p-6 border-t border-border/50 bg-[hsl(var(--surface-hover)/0.5)] flex justify-between items-center flex-shrink-0">
               {selectedCandidate.resume ? (
                 <Button variant="outline" asChild>
-                  <a href={selectedCandidate.resume} target="_blank" rel="noreferrer"><FileText className="w-4 h-4 mr-2" /> View Resume</a>
+                  <a href={selectedCandidate.resume.startsWith('http') ? selectedCandidate.resume : `${(import.meta.env.VITE_API_URL || 'http://localhost:5000').replace('/api', '')}${selectedCandidate.resume}`} target="_blank" rel="noreferrer"><FileText className="w-4 h-4 mr-2" /> View Resume</a>
                 </Button>
               ) : (
                 <span className="text-sm text-text-muted italic">No resume uploaded</span>
