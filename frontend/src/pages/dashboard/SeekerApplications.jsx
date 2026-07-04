@@ -165,7 +165,7 @@ const SeekerApplications = () => {
                   
                   {app.status === 'Interview' && app.interviewDetails && (
                     <div className="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/30 p-4 rounded-xl w-full max-w-sm ml-auto mt-2 text-sm text-indigo-900 dark:text-indigo-200">
-                      <p className="font-semibold mb-2 flex items-center gap-2"><Calendar className="w-4 h-4" /> Interview Scheduled</p>
+                      <p className="font-semibold mb-2 flex items-center gap-2"><CalendarDays className="w-4 h-4" /> Interview Scheduled</p>
                       <p className="whitespace-pre-wrap mb-3 text-xs opacity-90">{app.interviewDetails.availableSlots}</p>
                       {app.interviewDetails.meetingLink && (
                         <a href={app.interviewDetails.meetingLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg font-medium transition-colors text-xs">
