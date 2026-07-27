@@ -1,4 +1,18 @@
 import Company from '../models/Company.js';
+import Job from '../models/Job.js';
+
+// @desc    Get all companies with active jobs
+// @route   GET /api/companies
+// @access  Public
+export const getAllCompanies = async (req, res, next) => {
+  try {
+    const activeJobs = await Job.find({ status: 'Active' }).distinct('company');
+    const companies = await Company.find({ _id: { $in: activeJobs } }).select('-recruiter');
+    res.json(companies);
+  } catch (error) {
+    next(error);
+  }
+};
 
 // @desc    Get current user's company profile
 // @route   GET /api/companies/my

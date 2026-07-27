@@ -1,5 +1,8 @@
 import User from '../models/User.js';
 import generateToken from '../utils/generateToken.js';
+import { OAuth2Client } from 'google-auth-library';
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
@@ -163,5 +166,53 @@ export const deleteUserProfile = async (req, res, next) => {
     }
   } catch (error) {
     next(error);
+  }
+};
+
+// @desc    Google Login
+// @route   POST /api/auth/google
+// @access  Public
+export const googleLogin = async (req, res, next) => {
+  try {
+    const { token, role } = req.body;
+    
+    if (!token) {
+      res.status(400);
+      return next(new Error('Google token is required'));
+    }
+
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    
+    const payload = ticket.getPayload();
+    const { email, name, picture } = payload;
+    
+    let user = await User.findOne({ email });
+    
+    if (!user) {
+      user = await User.create({
+        name,
+        email,
+        password: Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8) + 'Aa1!', 
+        avatar: picture,
+        role: role || 'seeker'
+      });
+    }
+
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar,
+      token: generateToken(user._id),
+    });
+    
+  } catch (error) {
+    console.error('Google auth error:', error);
+    res.status(401);
+    return next(new Error('Invalid Google Token'));
   }
 };

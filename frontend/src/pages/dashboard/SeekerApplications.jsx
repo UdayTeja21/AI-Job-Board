@@ -4,24 +4,40 @@ import { Briefcase, Building2, MapPin, Sparkles, Clock, CheckCircle, XCircle, Mo
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import Button from '../../components/ui/Button';
+import { useSocket } from '../../context/SocketContext';
 
 const SeekerApplications = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { socket } = useSocket();
+
+  const fetchApplications = async () => {
+    try {
+      const res = await api.get('/applications/my-applications');
+      setApplications(res.data);
+    } catch (error) {
+      console.error('Error fetching applications', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchApplications = async () => {
-      try {
-        const res = await api.get('/applications/my-applications');
-        setApplications(res.data);
-      } catch (error) {
-        console.error('Error fetching applications', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchApplications();
   }, []);
+
+  useEffect(() => {
+    if (socket) {
+      const handleNewNotification = () => {
+        // Refresh application data when a notification (like application update) occurs
+        fetchApplications();
+      };
+      socket.on('new_notification', handleNewNotification);
+      return () => {
+        socket.off('new_notification', handleNewNotification);
+      };
+    }
+  }, [socket]);
 
   const getStatusIcon = (status) => {
     switch (status) {

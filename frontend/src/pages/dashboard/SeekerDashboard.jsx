@@ -6,34 +6,49 @@ import Button from '../../components/ui/Button';
 import { Briefcase, Clock, FileText, CheckCircle, ChevronRight, TrendingUp, Search } from 'lucide-react';
 import api from '../../services/api';
 import { cn } from '../../lib/utils';
+import { useSocket } from '../../context/SocketContext';
 
 const SeekerDashboard = () => {
   const [applications, setApplications] = useState([]);
   const [recommendedJobs, setRecommendedJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { socket } = useSocket();
+
+  const fetchData = async () => {
+    try {
+      const [appsRes, jobsRes] = await Promise.all([
+        api.get('/applications/my-applications'),
+        api.get('/jobs?pageNumber=1')
+      ]);
+      setApplications(appsRes.data);
+      const activeJobs = jobsRes.data.jobs.slice(0, 3).map(job => ({
+        ...job,
+        match: Math.floor(Math.random() * (95 - 75 + 1)) + 75
+      }));
+      setRecommendedJobs(activeJobs);
+    } catch (error) {
+      console.error('Error fetching dashboard data', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [appsRes, jobsRes] = await Promise.all([
-          api.get('/applications/my-applications'),
-          api.get('/jobs?pageNumber=1')
-        ]);
-        setApplications(appsRes.data);
-        // Simple mock match score for display purposes on active jobs
-        const activeJobs = jobsRes.data.jobs.slice(0, 3).map(job => ({
-          ...job,
-          match: Math.floor(Math.random() * (95 - 75 + 1)) + 75
-        }));
-        setRecommendedJobs(activeJobs);
-      } catch (error) {
-        console.error('Error fetching dashboard data', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (socket) {
+      const handleNewNotification = () => {
+        // Refresh dashboard data when a notification (like application update) occurs
+        fetchData();
+      };
+      socket.on('new_notification', handleNewNotification);
+      return () => {
+        socket.off('new_notification', handleNewNotification);
+      };
+    }
+  }, [socket]);
 
   const getStatusColor = (status) => {
     switch (status) {

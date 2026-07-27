@@ -68,21 +68,21 @@ const DashboardLayout = ({ allowedRoles }) => {
 
       {/* Sidebar */}
       <aside className={cn(
-        "w-full md:w-64 space-y-4 md:block transition-all duration-300 ease-in-out z-20",
+        "w-full md:w-64 space-y-6 md:block transition-all duration-300 ease-in-out z-20 shrink-0",
         isMobileSidebarOpen ? "block absolute md:relative top-24 md:top-0 left-4 right-4 md:left-auto md:right-auto bg-surface md:bg-transparent p-6 md:p-0 shadow-2xl md:shadow-none rounded-2xl md:rounded-none border md:border-none border-border" : "hidden"
       )}>
-        <div className="p-5 rounded-2xl glass-card flex items-center gap-4 relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          <div className="h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-xl shadow-lg relative z-10 uppercase">
+        <div className="p-5 rounded-2xl glass-panel flex items-center gap-4 relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg shadow-sm border border-primary/20 relative z-10 uppercase">
             {user.name.charAt(0)}
           </div>
-          <div className="relative z-10">
-            <h3 className="font-heading font-semibold text-text">{user.name}</h3>
-            <p className="text-sm text-text-muted capitalize">{user.role}</p>
+          <div className="relative z-10 flex-1 min-w-0">
+            <h3 className="font-heading font-semibold text-text truncate">{user.name}</h3>
+            <p className="text-xs text-text-muted capitalize truncate">{user.role}</p>
           </div>
         </div>
 
-        <nav className="flex flex-col gap-1">
+        <nav className="flex flex-col gap-1.5">
           {navItems.map((item) => {
             const isActive = location.pathname === item.href;
             return (
@@ -91,16 +91,16 @@ const DashboardLayout = ({ allowedRoles }) => {
                 to={item.href}
                 onClick={() => setIsMobileSidebarOpen(false)}
                 className={cn(
-                  'flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 relative overflow-hidden',
+                  'flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 relative overflow-hidden group',
                   isActive 
-                    ? 'text-white shadow-md font-semibold' 
-                    : 'text-text-muted hover:bg-[hsl(var(--surface-hover))] hover:text-text'
+                    ? 'text-white shadow-[0_4px_12px_hsl(var(--primary)/0.25)] font-semibold border border-transparent' 
+                    : 'text-text-muted hover:bg-[hsl(var(--surface-hover))] hover:text-text border border-transparent'
                 )}
               >
                 {isActive && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent opacity-90 -z-10"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary to-indigo-500 opacity-95 -z-10"></div>
                 )}
-                <item.icon className="h-5 w-5 relative z-10" />
+                <item.icon className={cn("h-5 w-5 relative z-10 transition-transform duration-300", isActive ? "text-white" : "group-hover:scale-110")} />
                 <span className="relative z-10">{item.name}</span>
               </Link>
             );

@@ -3,6 +3,7 @@ import Job from '../models/Job.js';
 import Notification from '../models/Notification.js';
 import sendEmail from '../utils/sendEmail.js';
 import { baseEmailTemplate } from '../utils/emailTemplates.js';
+import { emitNotification } from '../config/socket.js';
 
 // @desc    Apply for a job
 // @route   POST /api/applications
@@ -77,6 +78,24 @@ export const applyForJob = async (req, res, next) => {
         });
       } catch (recruiterEmailErr) {
         console.error('Failed to send notification email to recruiter', recruiterEmailErr);
+      }
+
+      // Create and emit in-app notification for the Recruiter
+      try {
+        const notif = await Notification.create({
+          recipient: job.recruiter._id,
+          sender: req.user._id,
+          type: 'application_update',
+          title: `New Application: ${job.title}`,
+          message: `${req.user.name} has applied for ${job.title}`,
+          data: {
+            applicationId: application._id,
+            jobId: job._id
+          }
+        });
+        emitNotification(job.recruiter._id, notif);
+      } catch (notifErr) {
+        console.error('Failed to create in-app notification for recruiter', notifErr);
       }
     }
 
@@ -204,7 +223,7 @@ export const updateApplicationStatus = async (req, res, next) => {
       notifMessage = `Congratulations! The recruiter has extended an offer.`;
     }
 
-    await Notification.create({
+    const notif = await Notification.create({
       recipient: application.applicant,
       sender: req.user._id,
       type: notifType,
@@ -217,6 +236,8 @@ export const updateApplicationStatus = async (req, res, next) => {
         meetingLink: meetingLink || '',
       }
     });
+
+    emitNotification(application.applicant._id || application.applicant, notif);
 
     // Send automated email for ALL status updates
     try {

@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-sans: "Inter", "Plus Jakarta Sans", system-ui, sans-serif;
   --font-heading: "Outfit", system-ui, sans-serif;
 
   --color-background: hsl(var(--background));
@@ -18,20 +18,32 @@
   --color-success: hsl(var(--success));
   --color-warning: hsl(var(--warning));
 
-  --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.08);
-  --shadow-glow: 0 0 20px rgba(79, 70, 229, 0.25);
+  --shadow-soft: 0 4px 20px -2px rgba(0,0,0,0.05);
+  --shadow-glow: 0 0 15px rgba(0, 0, 0, 0.08);
   --shadow-glass: inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  --shadow-premium: 0 1px 3px rgba(0,0,0,0.05), 0 12px 24px -4px rgba(0,0,0,0.05);
+  --shadow-button: 0 1px 2px rgba(0, 0, 0, 0.05);
 
-  --animate-fade-in: fadeIn 0.5s ease-out;
-  --animate-slide-up: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fade-in: fadeIn 0.4s ease-out;
+  --animate-slide-up: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-scale-in: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-shimmer: shimmer 2s linear infinite;
   
   @keyframes fadeIn {
     0% { opacity: 0; }
     100% { opacity: 1; }
   }
   @keyframes slideUp {
-    0% { opacity: 0; transform: translateY(20px); }
+    0% { opacity: 0; transform: translateY(10px); }
     100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scaleIn {
+    0% { opacity: 0; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
   }
 }
 
@@ -41,9 +53,9 @@
     --background: 0 0% 98.5%;
     --surface: 0 0% 100%;
     --surface-hover: 0 0% 96%;
-    --primary: 230 100% 64%; /* Sleek Vercel-like Blue */
+    --primary: 226 100% 60%; /* Vivid Indigo */
     --primary-foreground: 0 0% 100%;
-    --accent: 230 100% 96%;
+    --accent: 226 100% 96%;
     --text: 0 0% 9%;
     --text-muted: 0 0% 45%;
     --border: 0 0% 89%;
@@ -55,9 +67,9 @@
   .dark {
     /* Premium Dark Mode - Deep minimal gray */
     --background: 0 0% 4%;
-    --surface: 0 0% 7%;
+    --surface: 0 0% 8%;
     --surface-hover: 0 0% 12%;
-    --primary: 230 100% 64%;
+    --primary: 226 100% 64%;
     --primary-foreground: 0 0% 100%;
     --accent: 0 0% 14%;
     --text: 0 0% 95%;
@@ -74,7 +86,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading tracking-tight;
+    @apply font-heading tracking-tight text-[hsl(var(--text))];
   }
 }
 
@@ -88,7 +100,7 @@
   }
 
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))];
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-600 dark:from-blue-400 dark:to-indigo-500;
   }
 
   .hide-scrollbar {
@@ -98,5 +110,11 @@
   
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
+  }
+
+  .shimmer-bg {
+    background: linear-gradient(to right, hsl(var(--surface-hover)) 4%, hsl(var(--border)) 25%, hsl(var(--surface-hover)) 36%);
+    background-size: 1000px 100%;
+    @apply animate-shimmer;
   }
 }
