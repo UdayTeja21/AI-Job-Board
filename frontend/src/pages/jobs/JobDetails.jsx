@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-hot-toast';
-import { MapPin, Briefcase, IndianRupee, Calendar, Sparkles, Building2, Bot, CheckCircle, ArrowLeft, ChevronRight, Globe, Users, Clock } from 'lucide-react';
+import { MapPin, Briefcase, IndianRupee, Calendar, Sparkles, Building2, Bot, Check, CheckCircle, ArrowLeft, ChevronRight, Globe, Users, Clock } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Card, CardContent } from '../../components/ui/Card';
