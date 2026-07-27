@@ -10,9 +10,10 @@ Guests are users who have not logged in. Their access is limited to discovery an
 
 ### Capabilities:
 - **View Landing Page**: Access the platform's marketing copy, value propositions, and high-level features.
-- **Browse Jobs**: Navigate to the "Browse Jobs" page to view a paginated list of all active job postings on the platform.
+- **Browse Jobs & Companies**: Navigate to the "Find Jobs" or "Companies" pages to view active listings and hiring organizations.
 - **Search & Filter**: Search for jobs by keyword or filter by location and job type.
 - **View Job Details**: Click on a specific job card to read the full description, requirements, and AI summary.
+- **Public Directory**: Access the Blog, Pricing, and About Us pages from the footer.
 - **Register / Login**: Create a new account as either a "Seeker" or "Recruiter", or log in to an existing account.
 
 *(Note: If a guest attempts to click "Apply Now" on a job, they are intercepted and redirected to the Login page).*
@@ -29,6 +30,7 @@ A Job Seeker is an authenticated user looking for employment.
 - **Seeker Dashboard**: A personalized command center containing:
   - **Overview**: High-level statistics of their job hunt.
   - **My Applications**: A historical list of all submitted applications and their real-time ATS status (e.g., "Under Review", "Interview").
+  - **Real-Time Notifications**: Instant updates via the notification bell when an application advances in the hiring pipeline.
   - **Saved Jobs**: A bookmarking system for jobs the seeker wants to revisit later.
   - **Settings**: Manage personal profile details, skills, and change passwords.
 

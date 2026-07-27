@@ -28,14 +28,16 @@ The platform serves three distinct user roles:
 - **AI-Powered Matching**: Deep integration with Google Gemini to analyze resumes and output structured JSON data containing match percentages and skills gap analysis.
 - **Automated Copywriting**: AI generates engaging, conversion-optimized job summaries based on raw requirements.
 - **Kanban ATS**: A drag-and-drop board for recruiters to manage candidates across customizable hiring stages.
+- **Real-Time Notifications**: Integrated Socket.io for instant cross-device updates on application statuses.
 - **Role-Based Dashboards**: Entirely distinct UI experiences based on whether the logged-in user is a Seeker or Recruiter.
 - **Real-Time Job Search**: Advanced filtering, search functionality, and job bookmarking.
+- **Public Directory & Resources**: Browsable public pages for active hiring companies, blogs, pricing, and legal documents.
 
 ## Technology Choices
 The MERN stack (MongoDB, Express.js, React, Node.js) was selected for this project due to its ubiquitous nature, massive ecosystem, and the ability to use JavaScript across the entire stack.
 
 - **Frontend**: React (via Vite) was chosen for its blazing fast HMR and optimized production builds. Tailwind CSS ensures rapid, consistent styling without leaving the HTML context.
-- **Backend**: Node.js and Express provide a lightweight, non-blocking environment perfectly suited for handling concurrent API requests and file uploads.
+- **Backend**: Node.js and Express provide a lightweight, non-blocking environment perfectly suited for handling concurrent API requests and file uploads, augmented with **Socket.io** for real-time WebSocket communication.
 - **Database**: MongoDB (NoSQL) offers the flexibility needed for evolving schemas, particularly when storing unstructured AI outputs and complex application lifecycles.
 - **AI Integration**: The Google Generative AI SDK (Gemini) was chosen for its superior context windows and fast inference times, making real-time resume analysis feasible.
 

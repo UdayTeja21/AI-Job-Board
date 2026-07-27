@@ -23,7 +23,8 @@ The backend is structured around the MVC (Model-View-Controller) design pattern.
 backend/
 ├── src/
 │   ├── config/             # Database and external service configurations
-│   │   └── db.js           # MongoDB connection logic
+│   │   ├── db.js           # MongoDB connection logic
+│   │   └── socket.js       # Socket.io initialization and event handlers
 │   ├── controllers/        # Core business logic
 │   │   ├── aiController.js         # Interacts with Gemini API
 │   │   ├── applicationController.js# Handles job applications and ATS states
@@ -77,11 +78,13 @@ frontend/
 │   │       ├── Modal.jsx
 │   │       └── Skeleton.jsx
 │   ├── context/            # React Context API state providers
-│   │   └── AuthContext.jsx # Global user session state
+│   │   ├── AuthContext.jsx # Global user session state
+│   │   └── SocketContext.jsx # Global WebSocket state
 │   ├── pages/              # Heavy page components mapped to routes
 │   │   ├── auth/           # Login.jsx, Register.jsx
 │   │   ├── dashboard/      # Role-specific dashboard views (Seeker/Recruiter)
-│   │   └── jobs/           # JobSearch.jsx, JobDetails.jsx
+│   │   ├── jobs/           # JobSearch.jsx, JobDetails.jsx
+│   │   └── public/         # Public marketing pages (Blog, Pricing, About)
 │   ├── services/           # External API communication
 │   │   └── api.js          # Configured Axios instance with interceptors
 │   ├── App.jsx             # Root React component containing React Router

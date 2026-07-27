@@ -25,8 +25,9 @@ Navigation is controlled by **React Router v7**.
 ## 🧠 State Management
 
 ### Global State (Context API)
-Redux was deemed unnecessary for this project due to the localized nature of most state. The only true "global" state is the user's authentication session, which is managed via `AuthContext.jsx`.
-- **AuthContext** exposes: `user` (object), `login(email, password)`, `register(data)`, and `logout()`.
+Redux was deemed unnecessary for this project due to the localized nature of most state. The global state is managed via Context providers:
+- **AuthContext**: Exposes `user` (object), `login(email, password)`, `register(data)`, and `logout()`.
+- **SocketContext**: Initializes and maintains the Socket.io WebSocket connection, exposing the active `socket` instance and listening for real-time notification events across the entire application lifecycle.
 
 ### Local State
 Everything else (form inputs, modal visibility, fetching status) is managed at the component level using `useState` and `useReducer`. 

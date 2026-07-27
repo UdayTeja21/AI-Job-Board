@@ -35,6 +35,12 @@ A highly optimized search interface allows users to find jobs by keywords, locat
 ### Bookmarks (Saved Jobs)
 Job Seekers can "bookmark" jobs to review or apply to later. Bookmarked jobs are stored in the user's database document and viewable via the "Saved Jobs" dashboard tab.
 
+### Public Directories & Resources
+A suite of dynamically generated public pages are available without authentication:
+- **Companies Directory**: Automatically aggregates and lists only companies that have active job postings.
+- **Blog & Legal**: Fully functional React components for articles, privacy policies, and terms of service.
+- **Pricing**: Conversion-optimized tier listings for Recruiter subscriptions.
+
 ---
 
 ## 📊 Dashboards
@@ -90,5 +96,9 @@ When a recruiter reviews an application, they can trigger an AI evaluation. The 
 
 ---
 
-## 🔔 Notifications *(Future Scope)*
-A robust notification system (schema already exists) designed to alert users when their application status changes or when new jobs matching their profile are posted.
+## 🔔 Real-Time Notifications
+
+The platform utilizes a robust, bi-directional **WebSocket** connection via **Socket.io**.
+- When a recruiter updates a candidate's application status (e.g., from "Reviewing" to "Interview"), a Socket event is emitted from the backend.
+- The targeted Job Seeker receives this event in real-time.
+- The frontend dynamically updates the Notification bell count and triggers a localized toast notification, keeping cross-device and cross-tab sessions perfectly in sync without requiring page reloads.

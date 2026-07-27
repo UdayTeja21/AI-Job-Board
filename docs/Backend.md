@@ -8,7 +8,7 @@ The backend of the AI Job Board is a RESTful API built on **Node.js** and **Expr
 
 ```text
 backend/src/
-├── config/       # Connection logic (Database)
+├── config/       # Connection logic (Database, WebSockets)
 ├── controllers/  # Route handler logic (Business Rules)
 ├── middleware/   # Express interceptors (Auth, Error Handling)
 ├── models/       # Mongoose Schemas

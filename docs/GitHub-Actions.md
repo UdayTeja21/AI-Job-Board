@@ -14,9 +14,9 @@ Continuous Integration and Continuous Deployment (CI/CD) is essential for mainta
 
 ## 🛤 The Workflow
 
-A YAML configuration file (located in `.github/workflows/`) defines the automated pipeline. This workflow is triggered on:
-- `push` events to the `dev` and `master` branches.
-- `pull_request` events targeting the `master` branch.
+A YAML configuration file (located in `.github/workflows/main.yml`) defines the automated pipeline. This workflow is triggered on:
+- `push` events to the `dev` and `main` branches.
+- `pull_request` events targeting the `dev` and `main` branches.
 
 ### Pipeline Stages
 
@@ -35,9 +35,9 @@ A YAML configuration file (located in `.github/workflows/`) defines the automate
 - If the build fails (e.g., due to a missing import or strict type error), the pipeline halts.
 
 #### 4. Automatic Deployment
-*(Note: In the current setup, actual deployment is handled automatically by Vercel and Render Webhooks listening to GitHub branches, rather than the Actions runner directly pushing to servers).*
+The pipeline currently contains a deployment stub that verifies the build succeeds on the `dev` or `main` branches. 
 
-- Because Vercel and Render are connected directly to the GitHub repository, once the GitHub Actions pipeline passes on the `master` branch, the cloud providers automatically initiate their own deployment pulls.
+Because Vercel and Render are connected directly to the GitHub repository, once the GitHub Actions pipeline passes on the `main` branch, the cloud providers automatically initiate their own deployment pulls. Alternatively, deployment webhooks can be easily injected into the existing CI/CD stub.
 
 ---
 
