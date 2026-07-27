@@ -1,5 +1,8 @@
 import User from '../models/User.js';
 import generateToken from '../utils/generateToken.js';
+import { OAuth2Client } from 'google-auth-library';
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
@@ -106,6 +109,9 @@ export const updateUserProfile = async (req, res, next) => {
       user.title = req.body.title || user.title;
       user.bio = req.body.bio || user.bio;
       user.skills = req.body.skills ? req.body.skills.split(',').map(s => s.trim()) : user.skills;
+      if (req.body.resume !== undefined) {
+        user.resume = req.body.resume;
+      }
       
       if (req.body.password) {
         user.password = req.body.password;
@@ -127,5 +133,86 @@ export const updateUserProfile = async (req, res, next) => {
     }
   } catch (error) {
     next(error);
+  }
+};
+
+// @desc    Get all seekers
+// @route   GET /api/auth/seekers
+// @access  Private/Recruiter
+export const getSeekers = async (req, res, next) => {
+  try {
+    const seekers = await User.find({ role: 'seeker' })
+      .select('name email avatar resume skills title bio createdAt')
+      .sort({ createdAt: -1 });
+    res.json(seekers);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Delete user profile
+// @route   DELETE /api/auth/profile
+// @access  Private
+export const deleteUserProfile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      await user.deleteOne();
+      res.json({ message: 'User removed' });
+    } else {
+      res.status(404);
+      return next(new Error('User not found'));
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Google Login
+// @route   POST /api/auth/google
+// @access  Public
+export const googleLogin = async (req, res, next) => {
+  try {
+    const { token, role } = req.body;
+    
+    if (!token) {
+      res.status(400);
+      return next(new Error('Google token is required'));
+    }
+
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    
+    const payload = ticket.getPayload();
+    const { email, name, picture } = payload;
+    
+    let user = await User.findOne({ email });
+    
+    if (!user) {
+      user = await User.create({
+        name,
+        email,
+        password: Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8) + 'Aa1!', 
+        avatar: picture,
+        role: role || 'seeker'
+      });
+    }
+
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar,
+      token: generateToken(user._id),
+    });
+    
+  } catch (error) {
+    console.error('Google auth error:', error);
+    res.status(401);
+    return next(new Error('Invalid Google Token'));
   }
 };

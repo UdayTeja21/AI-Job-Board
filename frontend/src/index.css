@@ -1,35 +1,120 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "Inter", "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-heading: "Outfit", system-ui, sans-serif;
+
+  --color-background: hsl(var(--background));
+  --color-surface: hsl(var(--surface));
+  --color-surface-hover: hsl(var(--surface-hover));
+  --color-primary: hsl(var(--primary));
+  --color-accent: hsl(var(--accent));
+  --color-text: hsl(var(--text));
+  --color-text-muted: hsl(var(--text-muted));
+  --color-border: hsl(var(--border));
+  --color-danger: hsl(var(--danger));
+  --color-success: hsl(var(--success));
+  --color-warning: hsl(var(--warning));
+
+  --shadow-soft: 0 4px 20px -2px rgba(0,0,0,0.05);
+  --shadow-glow: 0 0 15px rgba(0, 0, 0, 0.08);
+  --shadow-glass: inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  --shadow-premium: 0 1px 3px rgba(0,0,0,0.05), 0 12px 24px -4px rgba(0,0,0,0.05);
+  --shadow-button: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+  --animate-fade-in: fadeIn 0.4s ease-out;
+  --animate-slide-up: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-scale-in: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-shimmer: shimmer 2s linear infinite;
+  
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes slideUp {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scaleIn {
+    0% { opacity: 0; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+  }
+}
+
 @layer base {
   :root {
-    --background: #FFFFFF;
-    --surface: #F9FAFB;
-    --primary: #4F46E5; /* Indigo */
-    --accent: #06B6D4; /* Cyan */
-    --text: #0F172A;
-    --text-muted: #64748B;
-    --border: #E5E7EB;
+    /* Premium Light Mode Colors - Linear/Vercel Aesthetic */
+    --background: 0 0% 98.5%;
+    --surface: 0 0% 100%;
+    --surface-hover: 0 0% 96%;
+    --primary: 226 100% 60%; /* Vivid Indigo */
+    --primary-foreground: 0 0% 100%;
+    --accent: 226 100% 96%;
+    --text: 0 0% 9%;
+    --text-muted: 0 0% 45%;
+    --border: 0 0% 89%;
+    --danger: 354 70% 54%;
+    --success: 160 84% 39%;
+    --warning: 48 96% 53%;
   }
 
   .dark {
-    --background: #09090B;
-    --surface: #18181B;
-    --primary: #6366F1;
-    --accent: #22D3EE;
-    --text: #FAFAFA;
-    --text-muted: #A1A1AA;
-    --border: #27272A;
+    /* Premium Dark Mode - Deep minimal gray */
+    --background: 0 0% 4%;
+    --surface: 0 0% 8%;
+    --surface-hover: 0 0% 12%;
+    --primary: 226 100% 64%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 0 0% 14%;
+    --text: 0 0% 95%;
+    --text-muted: 0 0% 60%;
+    --border: 0 0% 14%;
+    --danger: 354 70% 54%;
+    --success: 160 84% 39%;
+    --warning: 48 96% 53%;
   }
 
   body {
-    @apply bg-[color:var(--background)] text-[color:var(--text)] font-sans antialiased transition-colors duration-300;
+    @apply bg-[hsl(var(--background))] text-[hsl(var(--text))] font-sans antialiased transition-colors duration-300;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight text-[hsl(var(--text))];
   }
 }
 
 @layer utilities {
   .glass-panel {
-    @apply bg-[color:var(--surface)] backdrop-blur-md border border-[color:var(--border)] shadow-sm;
+    @apply bg-[hsl(var(--surface)/0.7)] backdrop-blur-xl border border-[hsl(var(--border)/0.5)] shadow-sm;
+  }
+  
+  .glass-card {
+    @apply bg-gradient-to-br from-[hsl(var(--surface)/0.9)] to-[hsl(var(--surface)/0.4)] backdrop-blur-lg border border-[hsl(var(--border)/0.4)] shadow-soft;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-600 dark:from-blue-400 dark:to-indigo-500;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .shimmer-bg {
+    background: linear-gradient(to right, hsl(var(--surface-hover)) 4%, hsl(var(--border)) 25%, hsl(var(--surface-hover)) 36%);
+    background-size: 1000px 100%;
+    @apply animate-shimmer;
   }
 }

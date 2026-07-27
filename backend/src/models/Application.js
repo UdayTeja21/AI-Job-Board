@@ -24,6 +24,11 @@ const applicationSchema = new mongoose.Schema(
       enum: ['Applied', 'Reviewing', 'Shortlisted', 'Interview', 'Rejected', 'Accepted'],
       default: 'Applied',
     },
+    interviewDetails: {
+      meetingLink: String,
+      availableSlots: String,
+      message: String
+    },
     aiMatchScore: {
       type: Number, // Percentage 0-100
       default: null,

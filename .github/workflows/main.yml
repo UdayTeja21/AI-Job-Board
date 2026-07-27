@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - dev
   pull_request:
     branches:
       - main
+      - dev
 
 jobs:
   build-and-test:
@@ -30,5 +32,21 @@ jobs:
       - name: Install frontend dependencies
         run: npm install --prefix frontend
 
+      - name: Lint frontend
+        run: npm run lint --prefix frontend
+        continue-on-error: true
+
       - name: Build frontend
         run: npm run build --prefix frontend
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
+
+  # Stub for continuous deployment (can be connected to Render/Vercel webhooks)
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
+    steps:
+      - name: Trigger deployment
+        run: echo "Deployment would be triggered here (e.g., via Vercel CLI or Render Deploy Hooks)"

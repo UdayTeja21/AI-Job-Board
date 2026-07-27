@@ -1,64 +1,198 @@
-# Premium AI-Powered Job Board
+# AI Job Board
 
-A production-ready, recruiter-grade AI-powered job board demonstrating modern software engineering practices, exceptional UI/UX, clean architecture, and scalability.
+A premium, AI-powered platform connecting top talent with world-class companies. This platform revolutionizes the recruitment process by leveraging cutting-edge Artificial Intelligence (Google Gemini) to analyze resumes, score candidates, and generate automated, engaging job summaries. 
 
-## 🚀 Tech Stack
+Built as a scalable, full-stack application, it features comprehensive dashboards for both Job Seekers and Recruiters, real-time application tracking, and an intuitive Kanban-style ATS (Applicant Tracking System).
 
-- **Frontend:** React.js, Vite, Tailwind CSS, React Router DOM, Axios, Framer Motion, Lucide React
-- **Backend:** Node.js, Express.js, MongoDB Atlas, Mongoose, JWT, bcrypt, Cloudinary
-- **DevOps:** GitHub Actions (CI/CD)
+---
 
-## 📦 Monorepo Structure
+## 📸 Screenshots
+*(Add screenshots here)*
+- **Landing Page**: `![Landing Page](./docs/assets/landing.png)`
+- **Seeker Dashboard**: `![Seeker Dashboard](./docs/assets/seeker-dashboard.png)`
+- **Recruiter ATS Board**: `![Recruiter ATS](./docs/assets/recruiter-ats.png)`
+- **AI Resume Matcher**: `![AI Matcher](./docs/assets/ai-matcher.png)`
 
+## 🚀 Live Demo
+- **Frontend**: [https://ai-job-board-frontend.vercel.app](https://ai-job-board-frontend.vercel.app) *(Replace with actual URL)*
+- **Backend**: [https://ai-job-board-backend.onrender.com](https://ai-job-board-backend.onrender.com) *(Replace with actual URL)*
+
+## 🔗 GitHub Repository
+[https://github.com/UdayTeja21/AI-Job-Board](https://github.com/UdayTeja21/AI-Job-Board)
+
+---
+
+## ✨ Features
+
+### For Job Seekers
+- **Smart Job Search**: Filter by location, job type, and keywords.
+- **AI Resume Analysis**: Get instant AI feedback on how well your resume matches a job description.
+- **Application Tracking**: Monitor the status of your applications in real-time.
+- **Job Bookmarks**: Save jobs to review later.
+- **Real-Time Notifications**: Instantly receive updates via Socket.io when your application status changes.
+
+### For Recruiters
+- **AI Job Summaries**: Automatically generate engaging job summaries based on requirements.
+- **Kanban ATS Board**: Drag-and-drop interface to move candidates through the hiring pipeline (Applied → Reviewing → Interview → Offered → Hired).
+- **Candidate Match Scoring**: AI analyzes applicant resumes against job descriptions and provides a match percentage and skills gap analysis.
+- **Company Profiles**: Manage public-facing company branding and logos.
+
+### System-Wide
+- **Role-Based Access Control (RBAC)**: Secure authentication and authorization for Seekers, Recruiters, and Admins.
+- **Responsive UI**: Built with Tailwind CSS and Framer Motion for a fluid, mobile-first experience.
+- **Dark Mode**: Native support for system-preference dark mode.
+- **Public Directory**: Browse active hiring companies, comprehensive blog posts, and detailed pricing tiers.
+- **Real-Time Events**: Socket.io integration keeps cross-tab and cross-device sessions perfectly in sync.
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+- **React 19** (Vite)
+- **Tailwind CSS v4** (Styling)
+- **Framer Motion** (Animations)
+- **React Router v7** (Navigation)
+- **Axios** (API Client)
+
+### Backend
+- **Node.js & Express.js**
+- **MongoDB & Mongoose** (Database)
+- **Socket.io** (Real-Time WebSockets)
+- **JSON Web Tokens (JWT)** (Authentication)
+- **Google Generative AI SDK** (Gemini AI Integration)
+- **Multer** (File Uploads)
+- **Nodemailer** (Email Services)
+
+---
+
+## 🏗 Architecture Overview
+The application follows a standard **MERN MVC** (Model-View-Controller) architecture. The frontend is a Single Page Application (SPA) that communicates with the backend via a RESTful API. The backend handles business logic, AI interactions, and database operations.
+
+For a detailed breakdown, see [Architecture Documentation](./docs/Architecture.md).
+
+---
+
+## 📁 Folder Structure
+```text
+AI-Job-Board/
+├── backend/
+│   ├── src/
+│   │   ├── config/       # DB & AI configurations
+│   │   ├── controllers/  # API logic
+│   │   ├── middleware/   # Auth & Error handling
+│   │   ├── models/       # Mongoose schemas
+│   │   └── routes/       # Express routes
+│   └── uploads/          # Local file storage (resumes/logos)
+├── frontend/
+│   ├── src/
+│   │   ├── components/   # Reusable UI elements
+│   │   ├── context/      # Global state (Auth)
+│   │   ├── pages/        # Route views
+│   │   └── services/     # API integration
+│   └── index.html
+└── docs/                 # Detailed Engineering Documentation
 ```
-job-board/
-├── frontend/           # React + Vite application
-├── backend/            # Express.js REST API
-├── docs/               # Architecture & API documentation
-├── .github/workflows/  # CI/CD pipelines
-└── package.json        # Root workspace configuration
+
+---
+
+## ⚙️ Installation & Running Locally
+
+### Prerequisites
+- Node.js (v18+)
+- MongoDB instance (Local or Atlas)
+- Google Gemini API Key
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/UdayTeja21/AI-Job-Board.git
+cd AI-Job-Board
 ```
 
-## 🛠️ Installation & Setup
+### 2. Environment Variables
+Create a `.env` file in the `backend/` directory:
+```env
+PORT=5000
+NODE_ENV=development
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+JWT_EXPIRE=30d
+GEMINI_API_KEY=your_gemini_api_key
+```
+Create a `.env` file in the `frontend/` directory (optional for local dev):
+```env
+VITE_API_URL=http://localhost:5000/api
+```
 
-1. **Install dependencies:**
-   ```bash
-   npm run install:all
-   ```
+### 3. Run Backend
+```bash
+cd backend
+npm install
+npm run dev
+```
 
-2. **Environment Variables:**
-   Create a `.env` file in the `backend/` directory:
-   ```env
-   NODE_ENV=development
-   PORT=5000
-   MONGO_URI=your_mongodb_uri
-   JWT_SECRET=your_jwt_secret
-   JWT_EXPIRE=30d
-   CLOUDINARY_CLOUD_NAME=your_cloud_name
-   CLOUDINARY_API_KEY=your_api_key
-   CLOUDINARY_API_SECRET=your_api_secret
-   ```
-   *Note: Frontend `.env` is optional unless overriding `VITE_API_URL`.*
+### 4. Run Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-3. **Run Development Servers:**
-   ```bash
-   npm run dev
-   ```
-   This concurrently runs the Vite frontend (usually port 5173) and the Express backend (port 5000).
+---
 
-## 🌟 Features
+## ☁️ Deployment
 
-- **Premium UI/UX:** Built with Tailwind CSS, featuring light/dark mode and modern SaaS aesthetics (glassmorphism, subtle animations).
-- **Authentication:** JWT-based secure authentication with Role-Based Access Control (Seeker, Recruiter, Admin).
-- **AI Integration Architecture:** Pre-built endpoints and UI integration for AI Resume Matching, AI Job Summaries, and Skill Gap Analysis.
-- **Job Search Engine:** Performant job searching with debouncing, filtering, and pagination.
-- **Role-specific Dashboards:** Dedicated experiences for job seekers, recruiters, and administrators.
+- **Frontend**: Designed to be deployed on Vercel. 
+- **Backend**: Designed to be deployed on Render.
 
-## 🚀 Deployment
+For a full deployment guide, see [Deployment Documentation](./docs/Deployment.md).
 
-This monorepo is configured for standard CI/CD deployment. The included GitHub Actions workflow automatically builds and lints the code.
-- **Frontend:** Deploy `frontend/` to Vercel/Netlify.
-- **Backend:** Deploy `backend/` to Render/Heroku/AWS.
+---
+
+## 🔄 GitHub Actions CI/CD
+This project utilizes GitHub Actions for Continuous Integration. Every push to the `dev` or `master` branch triggers a workflow that lints the codebase, builds the frontend, and prepares the backend for deployment.
+
+See [GitHub Actions Documentation](./docs/GitHub-Actions.md) for pipeline details.
+
+---
+
+## 📖 Detailed Documentation (Wiki)
+This repository includes a comprehensive set of engineering documentation for onboarding and architectural review:
+
+1. [Project Overview](./docs/Project-Overview.md)
+2. [Features](./docs/Features.md)
+3. [Architecture](./docs/Architecture.md)
+4. [API Documentation](./docs/API-Documentation.md)
+5. [Database Design](./docs/Database.md)
+6. [Authentication](./docs/Authentication.md)
+7. [Frontend Architecture](./docs/Frontend.md)
+8. [Backend Architecture](./docs/Backend.md)
+9. [Deployment Guide](./docs/Deployment.md)
+10. [GitHub Actions CI/CD](./docs/GitHub-Actions.md)
+11. [AI Development Process](./docs/AI-Development-Documentation.md)
+12. [User Guide](./docs/User-Guide.md)
+13. [Future Improvements](./docs/Future-Improvements.md)
+14. [Security Overview](./docs/Security.md)
+15. [Performance Optimization](./docs/Performance.md)
+16. [Accessibility](./docs/Accessibility.md)
+17. [Folder Structure](./docs/Folder-Structure.md)
+18. [Engineering Review](./docs/Engineering-Review.md)
+
+---
+
+## 🔮 Future Enhancements
+- Full Email Notifications via Nodemailer
+- Automated Interview Scheduling
+- Integrated Chat System between Recruiters and Candidates
+- Mobile Native Application (React Native)
+
+---
 
 ## 📄 License
-MIT License
+This project is licensed under the MIT License.
+
+## 🙏 Acknowledgements
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Framer Motion](https://www.framer.com/motion/)
+- [Google Gemini AI](https://deepmind.google/technologies/gemini/)
+- [Lucide Icons](https://lucide.dev/)
