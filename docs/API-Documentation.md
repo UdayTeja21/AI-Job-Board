@@ -1,150 +1,228 @@
-# API Documentation
+# AI Job Board API Documentation
 
-The AI Job Board utilizes a RESTful API built with Express.js. All endpoints are prefixed with `/api`.
+Base URL: `/api`
 
----
+## Authentication
 
-## 🔐 Auth API (`/api/auth`)
+All protected routes require a Bearer token in the `Authorization` header.
+Format: `Authorization: Bearer <token>`
 
-### 1. Register a User
+### 1. Register User
+- **URL**: `/api/auth/register`
 - **Method**: `POST`
-- **Endpoint**: `/api/auth/register`
-- **Purpose**: Create a new Job Seeker or Recruiter account.
-- **Auth Required**: No
-- **Request Body**:
+- **Access**: Public
+- **Body**:
   ```json
   {
     "name": "John Doe",
     "email": "john@example.com",
-    "password": "securepassword",
+    "password": "password123",
     "role": "seeker" // or "recruiter"
   }
   ```
-- **Response** (201 Created): Returns user object and JWT token.
+- **Response** (201 Created):
+  ```json
+  {
+    "_id": "60d5ecb543...",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "role": "seeker",
+    "token": "eyJhb..."
+  }
+  ```
 
 ### 2. Login User
+- **URL**: `/api/auth/login`
 - **Method**: `POST`
-- **Endpoint**: `/api/auth/login`
-- **Purpose**: Authenticate user and issue JWT.
-- **Auth Required**: No
-- **Request Body**:
+- **Access**: Public
+- **Body**:
   ```json
   {
     "email": "john@example.com",
-    "password": "securepassword"
+    "password": "password123"
   }
   ```
-- **Response** (200 OK): Returns user object and JWT token.
+- **Response** (200 OK): Returns user object and token.
 
-### 3. Get Current Profile
+### 3. Get User Profile
+- **URL**: `/api/auth/profile`
 - **Method**: `GET`
-- **Endpoint**: `/api/auth/profile`
-- **Purpose**: Fetch the logged-in user's profile data.
-- **Auth Required**: Yes (Bearer Token)
-- **Response** (200 OK): Returns user object without password hash.
+- **Access**: Private (Any logged-in user)
+- **Response** (200 OK): Returns current user object.
+
+### 4. Google OAuth Login
+- **URL**: `/api/auth/google`
+- **Method**: `POST`
+- **Access**: Public
+- **Body**:
+  ```json
+  {
+    "credential": "google_jwt_token_here",
+    "role": "seeker" // Only required during initial registration
+  }
+  ```
 
 ---
 
-## 💼 Jobs API (`/api/jobs`)
+## Jobs
 
 ### 1. Get All Jobs
+- **URL**: `/api/jobs`
 - **Method**: `GET`
-- **Endpoint**: `/api/jobs`
-- **Purpose**: Fetch paginated job listings with optional filters.
-- **Auth Required**: No
-- **Query Params**: `keyword`, `location`, `jobType`, `pageNumber`
-- **Response** (200 OK): Returns array of jobs, page info, and total pages.
+- **Access**: Public
+- **Query Parameters**: `keyword`, `location`, `pageNumber`, `jobType`, `workMode`
+- **Response** (200 OK):
+  ```json
+  {
+    "jobs": [...],
+    "page": 1,
+    "pages": 5
+  }
+  ```
 
-### 2. Get Single Job
+### 2. Get Job by ID
+- **URL**: `/api/jobs/:id`
 - **Method**: `GET`
-- **Endpoint**: `/api/jobs/:id`
-- **Purpose**: Fetch details of a specific job by ID.
-- **Auth Required**: No
-- **Response** (200 OK): Returns job object with populated company details.
+- **Access**: Public
 
 ### 3. Create Job
+- **URL**: `/api/jobs`
 - **Method**: `POST`
-- **Endpoint**: `/api/jobs`
-- **Purpose**: Post a new job listing.
-- **Auth Required**: Yes (Role: `recruiter`)
-- **Request Body**: `title`, `description`, `company`, `location`, `salary`, `jobType`, `requirements`
-- **Response** (201 Created): Returns the created job.
+- **Access**: Private (Recruiter only)
+- **Body**:
+  ```json
+  {
+    "title": "Software Engineer",
+    "description": "Job details here...",
+    "requirements": ["React", "Node.js"],
+    "category": "Software Development",
+    "jobType": "Full-time",
+    "workMode": "Remote",
+    "location": "San Francisco, CA",
+    "salaryRange": { "min": 100000, "max": 150000 }
+  }
+  ```
 
----
+### 4. Update Job
+- **URL**: `/api/jobs/:id`
+- **Method**: `PUT`
+- **Access**: Private (Recruiter only - Owner of job)
 
-## 🏢 Company API (`/api/companies`)
-
-### 1. Get My Company
+### 5. Get Recruiter's Jobs
+- **URL**: `/api/jobs/recruiter/my-jobs`
 - **Method**: `GET`
-- **Endpoint**: `/api/companies/my`
-- **Purpose**: Fetch the authenticated recruiter's company profile.
-- **Auth Required**: Yes (Role: `recruiter`)
-- **Response** (200 OK): Returns company object. Returns 404 if not found.
-
-### 2. Update/Create My Company
-- **Method**: `POST`
-- **Endpoint**: `/api/companies/my`
-- **Purpose**: Create or update the recruiter's company profile.
-- **Auth Required**: Yes (Role: `recruiter`)
-- **Request Body**: `name`, `description`, `website`, `location`, `companySize`, `logo`
-- **Response** (200 OK / 201 Created): Returns the updated/created company.
+- **Access**: Private (Recruiter only)
 
 ---
 
-## 📝 Application API (`/api/applications`)
+## Companies
+
+### 1. Get All Companies (With Active Jobs)
+- **URL**: `/api/companies`
+- **Method**: `GET`
+- **Access**: Public
+- **Response** (200 OK): Array of companies.
+
+### 2. Get/Update Recruiter's Company Profile
+- **URL**: `/api/companies/my`
+- **Method**: `GET` / `POST`
+- **Access**: Private (Recruiter only)
+- **Body** (For POST):
+  ```json
+  {
+    "name": "Tech Corp",
+    "description": "A great place to work",
+    "website": "https://techcorp.com",
+    "location": "New York, NY",
+    "companySize": "50-200 employees"
+  }
+  ```
+
+---
+
+## Applications
 
 ### 1. Apply for Job
+- **URL**: `/api/applications`
 - **Method**: `POST`
-- **Endpoint**: `/api/applications`
-- **Purpose**: Submit an application as a seeker.
-- **Auth Required**: Yes (Role: `seeker`)
-- **Request Body**: `jobId`, `resume` (URL), `coverLetter`
-- **Response** (201 Created): Returns the application document.
+- **Access**: Private (Seeker only)
+- **Body**:
+  ```json
+  {
+    "jobId": "60d5ec...",
+    "resume": "https://url-to-resume.pdf",
+    "coverLetter": "Hello..."
+  }
+  ```
 
-### 2. Get Seeker Applications
+### 2. Get My Applications
+- **URL**: `/api/applications/my-applications`
 - **Method**: `GET`
-- **Endpoint**: `/api/applications/my-applications`
-- **Purpose**: Fetch all applications submitted by the logged-in seeker.
-- **Auth Required**: Yes (Role: `seeker`)
-- **Response** (200 OK): Returns array of populated applications.
+- **Access**: Private (Seeker only)
 
-### 3. Update Application Status (ATS)
+### 3. Get Applications for a Job
+- **URL**: `/api/applications/job/:jobId`
+- **Method**: `GET`
+- **Access**: Private (Recruiter only - Owner of job)
+
+### 4. Update Application Status (ATS)
+- **URL**: `/api/applications/:id/status`
 - **Method**: `PUT`
-- **Endpoint**: `/api/applications/:id/status`
-- **Purpose**: Move a candidate through the Kanban ATS pipeline.
-- **Auth Required**: Yes (Role: `recruiter`)
-- **Request Body**: `status` (e.g., "Interview", "Hired")
-- **Response** (200 OK): Returns updated application.
+- **Access**: Private (Recruiter only)
+- **Body**:
+  ```json
+  {
+    "status": "Screening" // e.g. Pending, Screening, Interview, Offered, Rejected
+  }
+  ```
 
 ---
 
-## 🤖 AI API (`/api/ai`)
+## Notifications
+
+### 1. Get My Notifications
+- **URL**: `/api/notifications`
+- **Method**: `GET`
+- **Access**: Private (Any logged-in user)
+
+### 2. Mark Notification as Read
+- **URL**: `/api/notifications/:id/read`
+- **Method**: `PUT`
+- **Access**: Private
+
+### 3. Mark All Notifications as Read
+- **URL**: `/api/notifications/read-all`
+- **Method**: `PUT`
+- **Access**: Private
+
+---
+
+## AI Services
 
 ### 1. Generate Job Summary
+- **URL**: `/api/ai/job-summary`
 - **Method**: `POST`
-- **Endpoint**: `/api/ai/job-summary`
-- **Purpose**: Generate a marketing hook for a job description using Gemini.
-- **Auth Required**: Yes (Role: `recruiter`)
-- **Request Body**: `title`, `description`, `requirements`
-- **Response** (200 OK): Returns `{ summary: "AI generated text..." }`.
+- **Access**: Public
+- **Body**:
+  ```json
+  {
+    "jobId": "60d5ec..."
+  }
+  ```
+- **Response** (200 OK):
+  ```json
+  {
+    "summary": "This is a brief AI-generated summary..."
+  }
+  ```
 
-### 2. Match Candidate Resume
-- **Method**: `POST`
-- **Endpoint**: `/api/ai/match-resume`
-- **Purpose**: Score a candidate's resume against a job description.
-- **Auth Required**: Yes (Role: `recruiter`)
-- **Request Body**: `applicationId`, `jobId`
-- **Response** (200 OK): Returns JSON with `matchScore`, `analysis`, `matchedSkills`, and `missingSkills`.
-
----
-
-## 📁 Uploads API (`/api/upload`)
+## Uploads API (`/api/upload`)
 
 ### 1. Upload Resume
 - **Method**: `POST`
 - **Endpoint**: `/api/upload`
 - **Purpose**: Upload a PDF/DOCX file.
-- **Auth Required**: Yes (Handled by Multer)
+- **Auth Required**: Yes
 - **Request Body**: FormData containing `resume` file.
 - **Response** (200 OK): Returns `{ resumeUrl: "/uploads/filename.pdf" }`.
 

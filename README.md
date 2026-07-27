@@ -29,6 +29,7 @@ Built as a scalable, full-stack application, it features comprehensive dashboard
 - **AI Resume Analysis**: Get instant AI feedback on how well your resume matches a job description.
 - **Application Tracking**: Monitor the status of your applications in real-time.
 - **Job Bookmarks**: Save jobs to review later.
+- **Real-Time Notifications**: Instantly receive updates via Socket.io when your application status changes.
 
 ### For Recruiters
 - **AI Job Summaries**: Automatically generate engaging job summaries based on requirements.
@@ -40,6 +41,8 @@ Built as a scalable, full-stack application, it features comprehensive dashboard
 - **Role-Based Access Control (RBAC)**: Secure authentication and authorization for Seekers, Recruiters, and Admins.
 - **Responsive UI**: Built with Tailwind CSS and Framer Motion for a fluid, mobile-first experience.
 - **Dark Mode**: Native support for system-preference dark mode.
+- **Public Directory**: Browse active hiring companies, comprehensive blog posts, and detailed pricing tiers.
+- **Real-Time Events**: Socket.io integration keeps cross-tab and cross-device sessions perfectly in sync.
 
 ---
 
@@ -55,9 +58,11 @@ Built as a scalable, full-stack application, it features comprehensive dashboard
 ### Backend
 - **Node.js & Express.js**
 - **MongoDB & Mongoose** (Database)
+- **Socket.io** (Real-Time WebSockets)
 - **JSON Web Tokens (JWT)** (Authentication)
 - **Google Generative AI SDK** (Gemini AI Integration)
 - **Multer** (File Uploads)
+- **Nodemailer** (Email Services)
 
 ---
 
